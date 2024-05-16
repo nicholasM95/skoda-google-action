@@ -46,14 +46,14 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
   }
   hosts:
-    - host: skoda-google-action.nicholasmeyers.be
+    - host: skoda-google-actions.nicholasmeyers.be
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: skoda-google-action-tls
+    - secretName: skoda-google-actions-tls
       hosts:
-        - skoda-google-action.nicholasmeyers.be
+        - skoda-google-actions.nicholasmeyers.be
 
 resources:
   limits:
