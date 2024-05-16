@@ -8,7 +8,7 @@ module "vault" {
   source     = "git::https://github.com/nicholasM95/terraform-modules.git//modules/vault?ref=v1.1.3"
   role_id    = random_uuid.vault_role_id.result
   secret_id  = random_uuid.vault_secret_id.result
-  vault_path = "skoda-google-action"
+  vault_path = "skoda-google-actions"
   data_json = jsonencode(
     {
       SKODA_EMAIL    = var.skoda_email,
@@ -23,7 +23,7 @@ module "vault" {
 module "dns" {
   source    = "git::https://github.com/nicholasM95/terraform-modules.git//modules/dns-cloudflare?ref=v1.1.3"
   ip        = var.server_ip
-  name      = "skoda-google-action"
+  name      = "skoda-google-actions"
   host_name = var.host_name
 }
 

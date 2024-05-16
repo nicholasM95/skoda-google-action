@@ -27,13 +27,13 @@ variable "aws_region" {
 variable "namespace" {
   description = "Kubernetes namespace"
   type        = string
-  default     = "skoda-google-action"
+  default     = "skoda-google-actions"
 }
 
 variable "name" {
   description = "Application name"
   type        = string
-  default     = "skoda-google-action"
+  default     = "skoda-google-actions"
 }
 
 variable "image_tag" {
