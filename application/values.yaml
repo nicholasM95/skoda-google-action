@@ -5,9 +5,9 @@ image:
   pullPolicy: Always
 
 imagePullSecrets:
-  - name: "skoda-google-action"
+  - name: "skoda-google-actions"
 nameOverride: ""
-fullnameOverride: "skoda-google-action"
+fullnameOverride: "skoda-google-actions"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -46,14 +46,14 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
   }
   hosts:
-    - host: skoda-google-action.nicholasmeyers.be
+    - host: skoda-google-actions.nicholasmeyers.be
       paths:
         - path: /
           pathType: Prefix
   tls:
-    - secretName: skoda-google-action-tls
+    - secretName: skoda-google-actions-tls
       hosts:
-        - skoda-google-action.nicholasmeyers.be
+        - skoda-google-actions.nicholasmeyers.be
 
 resources:
   limits:
