@@ -1,0 +1,18 @@
+{
+  "requestId":"",
+  "payload":{
+    "agentUserId":"",
+    "commands":[
+      {
+        "ids":[
+          "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
+        ],
+        "status":"FAILURE",
+        "states":{
+          "online":true,
+          "on":false
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "requestId":"",
+  "payload":{
+    "agentUserId":"",
+    "devices":{
+      "883f8b70-1649-41f2-8a53-b41df7214f4a":{
+        "status":"SUCCESS",
+        "online":true,
+        "on":false
+      },
+      "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e":{
+        "status":"SUCCESS",
+        "online":true,
+        "on":false
+      },
+      "b1c18c45-8e42-493c-a3c0-928bd631caf7":{
+        "status":"SUCCESS",
+        "online":true,
+        "on":false
+      },
+      "2ec009da-cd6f-4adc-9021-9e7861358408":{
+        "status":"SUCCESS",
+        "online":true,
+        "on":false,
+        "capacityRemaining":[
+          {
+            "unit":"KILOMETERS",
+            "rawValue":450
+          }
+        ]
+      }
+    }
+  }
+}
