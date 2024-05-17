@@ -14,7 +14,9 @@ public class ClientConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        String accessToken = connectorService.getTokens(Client.VWG, skodaConfig.getEmail(), skodaConfig.getPassword()).getAccessToken();
-        return requestTemplate -> requestTemplate.header("Authorization", "Bearer " + accessToken);
+        return requestTemplate ->  {
+            String accessToken = connectorService.getTokens(Client.VWG, skodaConfig.getEmail(), skodaConfig.getPassword()).getAccessToken();
+            requestTemplate.header("Authorization", "Bearer " + accessToken);
+        };
     }
 }
