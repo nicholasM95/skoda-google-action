@@ -16,6 +16,7 @@ module "vault" {
       SKODA_PIN      = var.skoda_pin,
       SKODA_VIN      = var.skoda_vin,
       ISSUER_URI     = var.issuer_url,
+      SENTRY_DSN     = var.sentry_dsn,
     }
   )
 }
