@@ -151,6 +151,6 @@ public class ExecuteService implements WebhookService {
     }
 
     private void setSentryTag(UUID deviceId) {
-        Sentry.setTag("device", deviceId.toString());
+        Sentry.setTag("action_device", deviceId.toString());
     }
 }

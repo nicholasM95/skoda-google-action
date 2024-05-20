@@ -108,6 +108,6 @@ public class QueryService implements WebhookService {
 
     private void setSentryTag(List<UUID> devicesId) {
         List<String> devices = devicesId.stream().map(UUID::toString).toList();
-        Sentry.setTag("device", String.join(",", devices));
+        Sentry.setTag("action_device", String.join(",", devices));
     }
 }
