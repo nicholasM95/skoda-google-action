@@ -6,6 +6,7 @@ import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseRes
 import be.nicholasmeyers.skodagoogleactions.service.WebhookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +25,7 @@ public class WebHookController {
 
     @PostMapping
     public ResponseEntity<HookWebResponseResource> webhook(@RequestBody HookRequestResource resource) {
+        addMDCContext(resource);
         if (resource.inputs().size() == 1) {
             return ResponseEntity.ok(getService(resource.inputs().getFirst().intent()).handleAction(resource.inputs().getFirst()));
         }
@@ -33,5 +35,16 @@ public class WebHookController {
     private WebhookService getService(String intent) {
         log.info("Get service class for: {}", intent);
         return webhookServiceMap.get(intent);
+    }
+
+    private void addMDCContext(HookRequestResource resource) {
+        String device = "EMPTY";
+        if ("action.devices.QUERY".equals(resource.inputs().getFirst().intent())) {
+            device = resource.inputs().getFirst().payload().devices().toString();
+        } else if ("action.devices.EXECUTE".equals(resource.inputs().getFirst().intent())) {
+            device = resource.inputs().getFirst().payload().commands().getFirst().devices().getFirst().id().toString();
+        }
+        MDC.put("action", resource.inputs().getFirst().intent());
+        MDC.put("device", device);
     }
 }
