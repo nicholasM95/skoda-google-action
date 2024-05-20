@@ -25,8 +25,8 @@ public class WebHookController {
 
     @PostMapping
     public ResponseEntity<HookWebResponseResource> webhook(@RequestBody HookRequestResource resource) {
-        addMDCContext(resource);
         if (resource.inputs().size() == 1) {
+            addMDCContext(resource);
             return ResponseEntity.ok(getService(resource.inputs().getFirst().intent()).handleAction(resource.inputs().getFirst()));
         }
         throw new WebHookInputException("Invalid input size");
@@ -38,13 +38,6 @@ public class WebHookController {
     }
 
     private void addMDCContext(HookRequestResource resource) {
-        String device = "EMPTY";
-        if ("action.devices.QUERY".equals(resource.inputs().getFirst().intent())) {
-            device = resource.inputs().getFirst().payload().devices().toString();
-        } else if ("action.devices.EXECUTE".equals(resource.inputs().getFirst().intent())) {
-            device = resource.inputs().getFirst().payload().commands().getFirst().devices().getFirst().id().toString();
-        }
         MDC.put("action", resource.inputs().getFirst().intent());
-        MDC.put("device", device);
     }
 }
