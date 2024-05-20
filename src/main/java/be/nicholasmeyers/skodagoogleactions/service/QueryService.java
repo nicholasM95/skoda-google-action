@@ -10,16 +10,19 @@ import be.nicholasmeyers.skodagoogleactions.config.SkodaConfig;
 import be.nicholasmeyers.skodagoogleactions.exception.KilometerException;
 import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
 import be.nicholasmeyers.skodagoogleactions.resource.request.DeviceRequestResource;
+import be.nicholasmeyers.skodagoogleactions.resource.request.HookRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.request.InputRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.query.KilometerQueryResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.query.PayloadQueryResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.query.StateQueryResource;
+import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service("action.devices.QUERY")
@@ -43,6 +46,7 @@ public class QueryService implements WebhookService {
     }
 
     private Map<UUID, StateQueryResource> createDevices(List<UUID> devicesId) {
+        setSentryTag(devicesId);
         Map<UUID, StateQueryResource> devices = new HashMap<>();
         devicesId.forEach(id -> {
             if ("6abb7eaa-08a8-44c0-83a7-9c3c658bd63e".equals(id.toString())) {
@@ -100,5 +104,10 @@ public class QueryService implements WebhookService {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    private void setSentryTag(List<UUID> devicesId) {
+        List<String> devices = devicesId.stream().map(UUID::toString).toList();
+        Sentry.setTag("device", String.join(",", devices));
     }
 }
