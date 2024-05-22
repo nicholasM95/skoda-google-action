@@ -65,3 +65,8 @@ variable "issuer_url" {
   description = "Issuer url"
   type        = string
 }
+
+variable "sentry_dsn" {
+  description = "Sentry dsn"
+  type        = string
+}

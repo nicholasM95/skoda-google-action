@@ -19,6 +19,7 @@ env:
   SKODA_PIN: ${{ secrets.SKODA_PIN }}
   SKODA_VIN: ${{ secrets.SKODA_VIN }}
   ISSUER_URI: ${{ secrets.ISSUER_URI }}
+  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
 jobs:
   deploy:
@@ -26,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f # v4.1.3
+        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.2
@@ -61,7 +62,7 @@ jobs:
           echo $K8S_CONFIG | base64 -d > /home/runner/.kube/config
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@97f030cf6dc0b4f5e0da352c7bca9cca34579800 # v3.1.0
+        uses: hashicorp/setup-terraform@651471c36a6092792c552e8b1bef71e592b462d8 # v3.1.1
 
       - name: Terraform Init
         id: init
@@ -80,10 +81,10 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }}
+        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -var sentry_dsn=${{ env.SENTRY_DSN }}
         working-directory: infra/prod
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -auto-approve
+        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -var sentry_dsn=${{ env.SENTRY_DSN }} -auto-approve
         working-directory: infra/prod
