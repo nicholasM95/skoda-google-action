@@ -43,6 +43,9 @@ public class WebHookControllerIntegrationTest {
     private FlashClient flashClient;
 
     @MockBean
+    private HonkClient honkClient;
+
+    @MockBean
     private LocationClient locationClient;
 
     @MockBean
@@ -693,6 +696,225 @@ public class WebHookControllerIntegrationTest {
                         "title":"Skoda Service unavailable",
                         "status":503,
                         "detail":"Can't flash lights",
+                        "instance":"/webhook"
+                    }
+                     """;
+
+            mockMvc.perform(post("/webhook")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(status().isServiceUnavailable())
+                    .andExpect(content().json(responseBody, true));
+        }
+
+        @Test
+        public void executeSwitch2() throws Exception {
+            LocationWebResponseResource location = new LocationWebResponseResource();
+            location.setLatitude(1);
+            location.setLongitude(1);
+            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
+            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
+
+            HonkWebResponseResource honk = new HonkWebResponseResource();
+            honk.status("REQUEST_IN_PROGRESS");
+            ResponseEntity<HonkWebResponseResource> honkResponseEntity = ResponseEntity.ok(honk);
+            HonkWebRequestResource honkWebRequestResource = new HonkWebRequestResource(1, 1, 30);
+            Mockito.when(honkClient.honk("QMGAG8BEQSY003476", honkWebRequestResource)).thenReturn(honkResponseEntity);
+
+            String requestBody = """
+                    {
+                        "requestId": "123",
+                        "inputs": [
+                            {
+                                "intent": "action.devices.EXECUTE",
+                                "payload": {
+                                    "commands": [
+                                        {
+                                            "devices": [
+                                                {
+                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
+                                                }
+                                            ],
+                                            "execution": [
+                                                {
+                                                    "command": "action.devices.commands.OnOff",
+                                                    "params": {
+                                                        "on": true
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                    """;
+
+            String responseBody = new String(toByteArray(requireNonNull(
+                    this.getClass().getResourceAsStream("execute_switch_2_success_response.json"))
+            ));
+
+            mockMvc.perform(post("/webhook")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody, true));
+        }
+
+        @Test
+        public void executeSwitch2Failure() throws Exception {
+            LocationWebResponseResource location = new LocationWebResponseResource();
+            location.setLatitude(1);
+            location.setLongitude(1);
+            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
+            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
+
+            HonkWebResponseResource honk = new HonkWebResponseResource();
+            ResponseEntity<HonkWebResponseResource> honkResponseEntity = ResponseEntity.ok(honk);
+            HonkWebRequestResource honkWebRequestResource = new HonkWebRequestResource(1, 1, 30);
+            Mockito.when(honkClient.honk("QMGAG8BEQSY003476", honkWebRequestResource)).thenReturn(honkResponseEntity);
+
+            String requestBody = """
+                    {
+                        "requestId": "123",
+                        "inputs": [
+                            {
+                                "intent": "action.devices.EXECUTE",
+                                "payload": {
+                                    "commands": [
+                                        {
+                                            "devices": [
+                                                {
+                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
+                                                }
+                                            ],
+                                            "execution": [
+                                                {
+                                                    "command": "action.devices.commands.OnOff",
+                                                    "params": {
+                                                        "on": true
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                    """;
+
+            String responseBody = new String(toByteArray(requireNonNull(
+                    this.getClass().getResourceAsStream("execute_switch_2_failure_response.json"))
+            ));
+
+            mockMvc.perform(post("/webhook")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody, true));
+        }
+
+        @Test
+        public void executeSwitch2LocationNotFound() throws Exception {
+            LocationWebResponseResource location = new LocationWebResponseResource();
+            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
+            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
+
+            String requestBody = """
+                    {
+                        "requestId": "123",
+                        "inputs": [
+                            {
+                                "intent": "action.devices.EXECUTE",
+                                "payload": {
+                                    "commands": [
+                                        {
+                                            "devices": [
+                                                {
+                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
+                                                }
+                                            ],
+                                            "execution": [
+                                                {
+                                                    "command": "action.devices.commands.OnOff",
+                                                    "params": {
+                                                        "on": true
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                    """;
+
+            String responseBody = """
+                    {
+                        "title":"Skoda Service unavailable",
+                        "status":503,
+                        "detail":"Can't find location",
+                        "instance":"/webhook"
+                    }
+                     """;
+
+            mockMvc.perform(post("/webhook")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(status().isServiceUnavailable())
+                    .andExpect(content().json(responseBody, true));
+        }
+
+        @Test
+        public void executeSwitch2HonkFailed() throws Exception {
+            LocationWebResponseResource location = new LocationWebResponseResource();
+            location.setLatitude(1);
+            location.setLongitude(1);
+            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
+            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
+
+            String requestBody = """
+                    {
+                        "requestId": "123",
+                        "inputs": [
+                            {
+                                "intent": "action.devices.EXECUTE",
+                                "payload": {
+                                    "commands": [
+                                        {
+                                            "devices": [
+                                                {
+                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
+                                                }
+                                            ],
+                                            "execution": [
+                                                {
+                                                    "command": "action.devices.commands.OnOff",
+                                                    "params": {
+                                                        "on": true
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                    """;
+
+            String responseBody = """
+                    {
+                        "title":"Skoda Service unavailable",
+                        "status":503,
+                        "detail":"Can't honk",
                         "instance":"/webhook"
                     }
                      """;

@@ -1,15 +1,9 @@
 package be.nicholasmeyers.skodagoogleactions.service;
 
-import be.nicholasmeyers.skodagoogleactions.client.FlashClient;
-import be.nicholasmeyers.skodagoogleactions.client.LocationClient;
-import be.nicholasmeyers.skodagoogleactions.client.RequestClient;
-import be.nicholasmeyers.skodagoogleactions.client.VentilatorClient;
+import be.nicholasmeyers.skodagoogleactions.client.*;
 import be.nicholasmeyers.skodagoogleactions.client.resource.*;
 import be.nicholasmeyers.skodagoogleactions.config.SkodaConfig;
-import be.nicholasmeyers.skodagoogleactions.exception.CommandRequestException;
-import be.nicholasmeyers.skodagoogleactions.exception.FlashException;
-import be.nicholasmeyers.skodagoogleactions.exception.LocationException;
-import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
+import be.nicholasmeyers.skodagoogleactions.exception.*;
 import be.nicholasmeyers.skodagoogleactions.resource.request.CommandRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.request.InputRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseResource;
@@ -33,6 +27,7 @@ import java.util.UUID;
 public class ExecuteService implements WebhookService {
 
     private final FlashClient flashClient;
+    private final HonkClient honkClient;
     private final LocationClient locationClient;
     private final RequestClient requestClient;
     private final VentilatorClient ventilatorClient;
@@ -89,6 +84,11 @@ public class ExecuteService implements WebhookService {
                 }
             } else if (UUID.fromString("883f8b70-1649-41f2-8a53-b41df7214f4a").equals(device)) {
                 // Honk
+                LocationWebResponseResource location = getLocation();
+                HonkWebResponseResource honk = honk(location.getLatitude(), location.getLongitude());
+                if ("REQUEST_IN_PROGRESS".equals(honk.getStatus())) {
+                    return "SUCCESS";
+                }
             } else if (UUID.fromString("b1c18c45-8e42-493c-a3c0-928bd631caf7").equals(device)) {
                 // Start Ventilator
                 VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(30, skodaConfig.getPin());
@@ -127,6 +127,15 @@ public class ExecuteService implements WebhookService {
             return flash.getBody();
         }
         throw new FlashException("Can't flash lights");
+    }
+
+    private HonkWebResponseResource honk(int latitude, int longitude) {
+        HonkWebRequestResource honkWebRequestResource = new HonkWebRequestResource(latitude, longitude, 30);
+        ResponseEntity<HonkWebResponseResource> honk = honkClient.honk(skodaConfig.getVin(), honkWebRequestResource);
+        if (honk != null && honk.getStatusCode().is2xxSuccessful() && honk.getBody() != null) {
+            return honk.getBody();
+        }
+        throw new HonkException("Can't honk");
     }
 
     private String handleVentilatorRequest(ResponseEntity<VentilatorWebResponseResource> ventilatorWebResponseResource) {
