@@ -10,7 +10,6 @@ import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseRes
 import be.nicholasmeyers.skodagoogleactions.resource.response.execute.CommandExecuteResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.execute.PayloadExecuteResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.execute.StateExecuteResource;
-import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +68,6 @@ public class ExecuteService implements WebhookService {
 
         CommandExecuteResource commandExecuteResource = new CommandExecuteResource(Collections.singletonList(device),
                 status, new StateExecuteResource(true, isOn(device, status, (Boolean) action.get("on"))));
-        setSentryTag(device);
         return Collections.singletonList(commandExecuteResource);
     }
 
@@ -157,9 +155,5 @@ public class ExecuteService implements WebhookService {
             }
         }
         return "FAILURE";
-    }
-
-    private void setSentryTag(UUID deviceId) {
-        Sentry.setTag("action_device", deviceId.toString());
     }
 }

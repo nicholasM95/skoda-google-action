@@ -4,7 +4,6 @@ import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
 import be.nicholasmeyers.skodagoogleactions.resource.request.HookRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseResource;
 import be.nicholasmeyers.skodagoogleactions.service.WebhookService;
-import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,6 @@ public class WebHookController {
     @PostMapping
     public ResponseEntity<HookWebResponseResource> webhook(@RequestBody HookRequestResource resource) {
         if (resource.inputs().size() == 1) {
-            setSentryTag(resource);
             return ResponseEntity.ok(getService(resource.inputs().getFirst().intent()).handleAction(resource.inputs().getFirst()));
         }
         throw new WebHookInputException("Invalid input size");
@@ -35,9 +33,5 @@ public class WebHookController {
     private WebhookService getService(String intent) {
         log.info("Get service class for: {}", intent);
         return webhookServiceMap.get(intent);
-    }
-
-    private void setSentryTag(HookRequestResource resource) {
-        Sentry.setTag("action", resource.inputs().getFirst().intent());
     }
 }
