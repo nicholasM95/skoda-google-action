@@ -1,3 +1,24 @@
+# [1.2.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.1.0...v1.2.0) (2024-06-18)
+
+
+### Features
+
+* add honk ([1911d5b](https://github.com/nicholasM95/skoda-google-action/commit/1911d5b7934ecd4efc624565016bb69ebd59a465))
+* async calls for query ([5cf0029](https://github.com/nicholasM95/skoda-google-action/commit/5cf00291e5280e181c58357c9135fc2f05a0dbd2))
+* enable virtual threads ([53f0098](https://github.com/nicholasM95/skoda-google-action/commit/53f00987409b5cc1deee68a96bfa6099e2ce92d1))
+* remove sentry ([ceafc85](https://github.com/nicholasM95/skoda-google-action/commit/ceafc85038a52d5ed358eaa73e0825094ce0d444))
+* remove sentry ([128e636](https://github.com/nicholasM95/skoda-google-action/commit/128e63693247e8cad7d368f5a33c49ca6873eb1b))
+* remove start ventilator check ([8a14556](https://github.com/nicholasM95/skoda-google-action/commit/8a145560be1aa9404132a52d6bad9dd59a7fe718))
+* use internal route ([521d9d4](https://github.com/nicholasM95/skoda-google-action/commit/521d9d4c42967fa5e8e6ec07b8b64295a8dd6305))
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.sentry:sentry-logback to v7.10.0 ([0a63737](https://github.com/nicholasM95/skoda-google-action/commit/0a63737f45c45d3c5e9ea032c662106c9025e87d))
+* **deps:** update dependency io.sentry:sentry-spring-boot-starter-jakarta to v7.10.0 ([960a108](https://github.com/nicholasM95/skoda-google-action/commit/960a1081acac71a76eed5c4f557810ed3a22dd2b))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.3.0 ([fe74701](https://github.com/nicholasM95/skoda-google-action/commit/fe7470119d5de188e9a2cec7c648e2cb22818587))
+* **deps:** update dependency org.springframework.cloud:spring-cloud-dependencies to v2023.0.2 ([cf6bd27](https://github.com/nicholasM95/skoda-google-action/commit/cf6bd2737b49ece1be9550913a43a79aca9ce01c))
+
 # [1.1.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.0.0...v1.1.0) (2024-05-22)
 
 
