@@ -15,7 +15,6 @@ env:
   SKODA_PIN: ${{ secrets.SKODA_PIN }}
   SKODA_VIN: ${{ secrets.SKODA_VIN }}
   ISSUER_URI: ${{ secrets.ISSUER_URI }}
-  SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
 
 jobs:
   destroy:
@@ -23,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v4.0.2
@@ -77,10 +76,10 @@ jobs:
 
       - name: Terraform Plan Destroy
         id: plan-destroy
-        run: terraform plan -destroy -var image_tag=foobar -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -var sentry_dsn=${{ env.SENTRY_DSN }}
+        run: terraform plan -destroy -var image_tag=foobar -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }}
         working-directory: infra/prod
 
       - name: Terraform Destroy
         id: destroy
-        run: terraform destroy -var image_tag=foobar -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -var sentry_dsn=${{ env.SENTRY_DSN }} -auto-approve
+        run: terraform destroy -var image_tag=foobar -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -auto-approve
         working-directory: infra/prod

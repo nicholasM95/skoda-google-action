@@ -2,6 +2,6 @@ package be.nicholasmeyers.skodagoogleactions.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient(name = "status-client", url = "https://api-skoda.nicholasmeyers.be", configuration = ClientConfig.class)
+@FeignClient(name = "status-client", url = "http://api-skoda.skoda.svc.cluster.local:8080", configuration = ClientConfig.class)
 public interface StatusClient extends StatusApi{
 }

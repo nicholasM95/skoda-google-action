@@ -10,20 +10,20 @@ import be.nicholasmeyers.skodagoogleactions.config.SkodaConfig;
 import be.nicholasmeyers.skodagoogleactions.exception.KilometerException;
 import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
 import be.nicholasmeyers.skodagoogleactions.resource.request.DeviceRequestResource;
-import be.nicholasmeyers.skodagoogleactions.resource.request.HookRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.request.InputRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.query.KilometerQueryResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.query.PayloadQueryResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.query.StateQueryResource;
-import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service("action.devices.QUERY")
 public class QueryService implements WebhookService {
@@ -31,6 +31,15 @@ public class QueryService implements WebhookService {
     private final CoolingClient coolingClient;
     private final StatusClient statusClient;
     private final SkodaConfig skodaConfig;
+
+    private static boolean canBeParsedToInt(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
 
     @Override
     public HookWebResponseResource handleAction(InputRequestResource resource) {
@@ -46,7 +55,7 @@ public class QueryService implements WebhookService {
     }
 
     private Map<UUID, StateQueryResource> createDevices(List<UUID> devicesId) {
-        setSentryTag(devicesId);
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
         Map<UUID, StateQueryResource> devices = new HashMap<>();
         devicesId.forEach(id -> {
             if ("6abb7eaa-08a8-44c0-83a7-9c3c658bd63e".equals(id.toString())) {
@@ -54,60 +63,62 @@ public class QueryService implements WebhookService {
             } else if ("883f8b70-1649-41f2-8a53-b41df7214f4a".equals(id.toString())) {
                 devices.put(id, new StateQueryResource("SUCCESS", true, false, null));
             } else if ("b1c18c45-8e42-493c-a3c0-928bd631caf7".equals(id.toString())) {
-                devices.put(id, new StateQueryResource("SUCCESS", true, isAirCoolerOn(), null));
+                log.info("get air cooler info");
+                CompletableFuture<Void> future = isAirCoolerOn().thenAcceptAsync(isOn -> {
+                    log.info("get air cooler info done");
+                    devices.put(id, new StateQueryResource("SUCCESS", true, isOn, null));
+                });
+                futures.add(future);
             } else if ("2ec009da-cd6f-4adc-9021-9e7861358408".equals(id.toString())) {
-                KilometerQueryResource kilometerQueryResource = new KilometerQueryResource("KILOMETERS", getKilometers());
-                devices.put(id, new StateQueryResource("SUCCESS", true, false, Collections.singletonList(kilometerQueryResource)));
+                log.info("get kilometers info");
+                CompletableFuture<Void> future = getKilometers().thenAcceptAsync(kilometers -> {
+                    log.info("get kilometers info done");
+                    KilometerQueryResource kilometerQueryResource = new KilometerQueryResource("KILOMETERS", kilometers);
+                    devices.put(id, new StateQueryResource("SUCCESS", true, false, Collections.singletonList(kilometerQueryResource)));
+                });
+                futures.add(future);
             }
         });
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+        log.info("all done");
         return devices;
     }
 
-    private int getKilometers() {
-        ResponseEntity<StatusWebResponseResource> status = statusClient.getStatus(skodaConfig.getVin());
-        if (status == null || !status.getStatusCode().is2xxSuccessful() || status.getBody() == null) {
-            throw new KilometerException("Status is empty");
-        }
+    private CompletableFuture<Integer> getKilometers() {
+        return CompletableFuture.supplyAsync(() -> {
+            ResponseEntity<StatusWebResponseResource> status = statusClient.getStatus(skodaConfig.getVin());
+            if (status == null || !status.getStatusCode().is2xxSuccessful() || status.getBody() == null) {
+                throw new KilometerException("Status is empty");
+            }
 
-        List<DataWebResponseResource> data = status.getBody().getData().stream()
-                .filter(dataWebResponseResource -> "0x030103FFFF".equals(dataWebResponseResource.getId()))
-                .toList();
+            List<DataWebResponseResource> data = status.getBody().getData().stream()
+                    .filter(dataWebResponseResource -> "0x030103FFFF".equals(dataWebResponseResource.getId()))
+                    .toList();
 
-        if (data.isEmpty()) {
-            throw new KilometerException("Data is not complete");
-        }
+            if (data.isEmpty()) {
+                throw new KilometerException("Data is not complete");
+            }
 
-        List<FieldWebResponseResource> fields = data.stream().findFirst().get().getFields().stream()
-                .filter(fieldWebResponseResource -> "0x0301030006".equals(fieldWebResponseResource.getId()))
-                .filter(fieldWebResponseResource -> canBeParsedToInt(fieldWebResponseResource.getValue()))
-                .toList();
+            List<FieldWebResponseResource> fields = data.stream().findFirst().get().getFields().stream()
+                    .filter(fieldWebResponseResource -> "0x0301030006".equals(fieldWebResponseResource.getId()))
+                    .filter(fieldWebResponseResource -> canBeParsedToInt(fieldWebResponseResource.getValue()))
+                    .toList();
 
-        if (fields.isEmpty()) {
-            throw new KilometerException("Fields are not complete");
-        }
-        return Integer.parseInt(fields.stream().findFirst().get().getValue());
+            if (fields.isEmpty()) {
+                throw new KilometerException("Fields are not complete");
+            }
+            return Integer.parseInt(fields.stream().findFirst().get().getValue());
+        });
     }
 
-    private boolean isAirCoolerOn() {
-        ResponseEntity<CoolingWebResponseResource> cooling = coolingClient.getCoolingStatus(skodaConfig.getVin());
-        if (cooling != null && cooling.getStatusCode().is2xxSuccessful() && cooling.getBody() != null
-                && cooling.getBody().getReport() != null && cooling.getBody().getReport().getRemainingClimateTime() != null) {
-            return cooling.getBody().getReport().getRemainingClimateTime() != 0;
-        }
-        return false;
-    }
-
-    private static boolean canBeParsedToInt(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
+    private CompletableFuture<Boolean> isAirCoolerOn() {
+        return CompletableFuture.supplyAsync(() -> {
+            ResponseEntity<CoolingWebResponseResource> cooling = coolingClient.getCoolingStatus(skodaConfig.getVin());
+            if (cooling != null && cooling.getStatusCode().is2xxSuccessful() && cooling.getBody() != null
+                    && cooling.getBody().getReport() != null && cooling.getBody().getReport().getRemainingClimateTime() != null) {
+                return cooling.getBody().getReport().getRemainingClimateTime() != 0;
+            }
             return false;
-        }
-    }
-
-    private void setSentryTag(List<UUID> devicesId) {
-        List<String> devices = devicesId.stream().map(UUID::toString).toList();
-        Sentry.setTag("action_device", String.join(",", devices));
+        });
     }
 }

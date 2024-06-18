@@ -9,6 +9,8 @@ tags:
     description: cooling
   - name: flash
     description: flash
+  - name: honk
+    description: honk
   - name: location
     description: location
   - name: request
@@ -84,6 +86,45 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FlashWebResponseResource'
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailResponseResource'
+  /honk/{vin}:
+    post:
+      tags:
+        - honk
+      operationId: honk
+      summary: Honk
+      parameters:
+        - name: vin
+          in: path
+          description: vehicle vin
+          required: true
+          schema:
+            type: string
+            example: QMGAG8BEQSY003476
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HonkWebRequestResource'
+      responses:
+        201:
+          description: Request successfully processed
+          headers:
+            Location:
+              description: The location where the resource was created
+              schema:
+                type: string
+                example: /request/QMGAG8BEQSY003476/2342
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HonkWebResponseResource'
         400:
           description: Bad request
           content:
@@ -484,6 +525,54 @@ components:
           description: duration
           example: 20
     FlashWebResponseResource:
+      required:
+        - id
+        - status
+        - duration
+        - lastUpdated
+      type: object
+      properties:
+        id:
+          type: string
+          description: id
+          example: 21
+        status:
+          type: string
+          description: status
+          example: REQUEST_IN_PROGRESS
+        duration:
+          type: integer
+          format: int32
+          description: duration
+          example: 20
+        lastUpdated:
+          type: string
+          format: date-time
+          description: last updated
+          example: 2024-1O-10T10:10:10
+    HonkWebRequestResource:
+      required:
+        - latitude
+        - longitude
+        - duration
+      type: object
+      properties:
+        latitude:
+          type: integer
+          format: int32
+          description: latitude
+          example: 17292954
+        longitude:
+          type: integer
+          format: int32
+          description: longitude
+          example: 287205
+        duration:
+          type: integer
+          format: int32
+          description: duration
+          example: 20
+    HonkWebResponseResource:
       required:
         - id
         - status

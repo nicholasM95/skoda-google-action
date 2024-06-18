@@ -9,7 +9,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableConfigurationProperties(SkodaConfig.class)
-@EnableFeignClients(clients = {CoolingClient.class, FlashClient.class, LocationClient.class, RequestClient.class, StatusClient.class, VentilatorClient.class})
+@EnableFeignClients(clients = {CoolingClient.class, FlashClient.class, HonkClient.class,
+        LocationClient.class, RequestClient.class, StatusClient.class, VentilatorClient.class})
 public class SkodaGoogleActionsApplication {
 
     public static void main(String[] args) {
