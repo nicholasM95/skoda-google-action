@@ -50,7 +50,7 @@ public class SyncService implements WebhookService {
 
     private DeviceSyncResource createKilometerSensor() {
         String id = "2ec009da-cd6f-4adc-9021-9e7861358408";
-        String name = "Kilometer";
+        String name = "Skoda";
         NameSyncResource nameSyncResource = createNameSyncResource(name);
         String[] traits = {"action.devices.traits.EnergyStorage"};
 

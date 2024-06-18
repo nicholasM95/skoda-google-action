@@ -57,11 +57,11 @@
         ],
         "name":{
           "defaultNames":[
-            "Skoda"
+            "Airco"
           ],
-          "name":"Skoda",
+          "name":"Airco",
           "nicknames":[
-            "Skoda"
+            "Airco"
           ]
         },
         "willReportState":true,
