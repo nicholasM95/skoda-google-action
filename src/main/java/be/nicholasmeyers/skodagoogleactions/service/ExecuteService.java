@@ -28,7 +28,6 @@ public class ExecuteService implements WebhookService {
     private final FlashClient flashClient;
     private final HonkClient honkClient;
     private final LocationClient locationClient;
-    private final RequestClient requestClient;
     private final VentilatorClient ventilatorClient;
     private final SkodaConfig skodaConfig;
 
@@ -138,21 +137,8 @@ public class ExecuteService implements WebhookService {
 
     private String handleVentilatorRequest(ResponseEntity<VentilatorWebResponseResource> ventilatorWebResponseResource) {
         if (ventilatorWebResponseResource != null && ventilatorWebResponseResource.getStatusCode().is2xxSuccessful() &&
-                ventilatorWebResponseResource.getBody() != null) {
-            String id = ventilatorWebResponseResource.getBody().getId();
-            for (int i = 0; i < 15; i++) {
-                ResponseEntity<RequestWebResponseResource> request = requestClient.getRequest(skodaConfig.getVin(), id);
-                if (request != null && request.getStatusCode().is2xxSuccessful() && request.getBody() != null) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    if ("request_successful".equals(request.getBody().getStatus())) {
-                        return "SUCCESS";
-                    }
-                }
-            }
+                ventilatorWebResponseResource.getBody() != null && ventilatorWebResponseResource.getBody().getId() != null) {
+            return "SUCCESS";
         }
         return "FAILURE";
     }

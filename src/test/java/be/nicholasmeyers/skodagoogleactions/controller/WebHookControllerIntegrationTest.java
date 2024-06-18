@@ -936,11 +936,6 @@ public class WebHookControllerIntegrationTest {
             ResponseEntity<VentilatorWebResponseResource> ventilatorResponseEntity = ResponseEntity.ok(ventilator);
             Mockito.when(ventilatorClient.startVentilator("QMGAG8BEQSY003476", ventilatorWebRequestResource)).thenReturn(ventilatorResponseEntity);
 
-            RequestWebResponseResource request = new RequestWebResponseResource();
-            request.setStatus("request_successful");
-            ResponseEntity<RequestWebResponseResource> requestResponseEntity = ResponseEntity.ok(request);
-            Mockito.when(requestClient.getRequest("QMGAG8BEQSY003476", "5555")).thenReturn(requestResponseEntity);
-
             String requestBody = """
                     {
                         "requestId": "123",
@@ -1091,7 +1086,6 @@ public class WebHookControllerIntegrationTest {
         public void executeVentilatorOffFailure() throws Exception {
             VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(0, "1111");
             VentilatorWebResponseResource ventilator = new VentilatorWebResponseResource();
-            ventilator.setId("5555");
             ResponseEntity<VentilatorWebResponseResource> ventilatorResponseEntity = ResponseEntity.ok(ventilator);
             Mockito.when(ventilatorClient.stopVentilator("QMGAG8BEQSY003476", ventilatorWebRequestResource)).thenReturn(ventilatorResponseEntity);
 
