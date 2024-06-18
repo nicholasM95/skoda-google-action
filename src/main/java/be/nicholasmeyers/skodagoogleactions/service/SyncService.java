@@ -40,7 +40,7 @@ public class SyncService implements WebhookService {
 
     private DeviceSyncResource createAirCooler() {
         String id = "b1c18c45-8e42-493c-a3c0-928bd631caf7";
-        String name = "Skoda";
+        String name = "Airco";
         NameSyncResource nameSyncResource = createNameSyncResource(name);
         String[] traits = {"action.devices.traits.OnOff"};
 
@@ -50,7 +50,7 @@ public class SyncService implements WebhookService {
 
     private DeviceSyncResource createKilometerSensor() {
         String id = "2ec009da-cd6f-4adc-9021-9e7861358408";
-        String name = "Skoda";
+        String name = "Kilometer";
         NameSyncResource nameSyncResource = createNameSyncResource(name);
         String[] traits = {"action.devices.traits.EnergyStorage"};
 
