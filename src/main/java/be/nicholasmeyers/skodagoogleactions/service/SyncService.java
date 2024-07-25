@@ -40,7 +40,7 @@ public class SyncService implements WebhookService {
 
     private DeviceSyncResource createAirCooler() {
         String id = "b1c18c45-8e42-493c-a3c0-928bd631caf7";
-        String name = "Skoda";
+        String name = "Airco";
         NameSyncResource nameSyncResource = createNameSyncResource(name);
         String[] traits = {"action.devices.traits.OnOff"};
 

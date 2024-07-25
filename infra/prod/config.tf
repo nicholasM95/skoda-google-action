@@ -7,7 +7,7 @@ terraform {
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "4.35.0"
+      version = "4.38.0"
     }
 
     random = {
@@ -22,7 +22,7 @@ terraform {
 
     aws = {
       source  = "hashicorp/aws"
-      version = "5.54.1"
+      version = "5.59.0"
     }
   }
 
