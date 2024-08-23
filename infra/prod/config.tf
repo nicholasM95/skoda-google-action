@@ -2,12 +2,12 @@ terraform {
   required_providers {
     helm = {
       source  = "hashicorp/helm"
-      version = "2.14.0"
+      version = "2.15.0"
     }
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "4.38.0"
+      version = "4.40.0"
     }
 
     random = {
@@ -17,12 +17,12 @@ terraform {
 
     vault = {
       source  = "hashicorp/vault"
-      version = "4.3.0"
+      version = "4.4.0"
     }
 
     aws = {
       source  = "hashicorp/aws"
-      version = "5.59.0"
+      version = "5.64.0"
     }
   }
 
