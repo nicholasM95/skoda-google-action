@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.3.0...v1.3.1) (2024-08-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.3.3 ([de5c5c1](https://github.com/nicholasM95/skoda-google-action/commit/de5c5c1e5ac4655426a1b0aaf6b5dcc676472ae1))
+
 # [1.3.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.2.0...v1.3.0) (2024-07-25)
 
 
