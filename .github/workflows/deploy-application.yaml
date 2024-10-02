@@ -14,11 +14,6 @@ permissions:
 env:
   AWS_ROLE: 'arn:aws:iam::896918338968:role/GitHubActionsSkodaGoogleActions'
   VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
-  SKODA_EMAIL: ${{ secrets.SKODA_EMAIL }}
-  SKODA_PASSWORD: ${{ secrets.SKODA_PASSWORD }}
-  SKODA_PIN: ${{ secrets.SKODA_PIN }}
-  SKODA_VIN: ${{ secrets.SKODA_VIN }}
-  ISSUER_URI: ${{ secrets.ISSUER_URI }}
 
 jobs:
   deploy:
@@ -48,6 +43,8 @@ jobs:
             github-actions-secret/data/secret PUBLIC_IP | PUBLIC_IP ;    
             github-actions-secret/data/secret DOCKER_CONFIG | DOCKER_CONFIG ;
             github-actions-secret/data/secret VAULT_TOKEN | VAULT_TOKEN ;
+            github-actions-secret/data/secret KUBE_ROOT_CA_CRT | KUBE_ROOT_CA_CRT ;
+            github-actions-secret/data/secret KUBE_INTERNAL_HOST | KUBE_INTERNAL_HOST ;
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
@@ -80,10 +77,10 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }}
+        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST
         working-directory: infra/prod
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var skoda_email=${{ env.SKODA_EMAIL }} -var skoda_password=${{ env.SKODA_PASSWORD }} -var skoda_pin=${{ env.SKODA_PIN }} -var skoda_vin=${{ env.SKODA_VIN }} -var issuer_url=${{ env.ISSUER_URI }} -auto-approve
+        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST  -auto-approve
         working-directory: infra/prod

@@ -41,27 +41,12 @@ variable "image_tag" {
   type        = string
 }
 
-variable "skoda_email" {
-  description = "Skoda email"
+variable "kubernetes_ca_cert" {
+  description = "Kubernetes ca cert"
   type        = string
 }
 
-variable "skoda_password" {
-  description = "Skoda password"
-  type        = string
-}
-
-variable "skoda_vin" {
-  description = "Skoda vin"
-  type        = string
-}
-
-variable "skoda_pin" {
-  description = "Skoda pin"
-  type        = string
-}
-
-variable "issuer_url" {
-  description = "Issuer url"
+variable "kubernetes_internal_host" {
+  description = "Kubernetes internal host"
   type        = string
 }
