@@ -1,3 +1,16 @@
+# [1.4.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.3.1...v1.4.0) (2024-10-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency be.nicholasmeyers.vwgroup-connector:vwgroup-connector to v1.2.2 ([790b895](https://github.com/nicholasM95/skoda-google-action/commit/790b8958f248e6de0e99447b804904234a5e7ebd))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.3.4 ([b2bf7de](https://github.com/nicholasM95/skoda-google-action/commit/b2bf7de0716ea6ad26586a8dffc0b1eb5362488d))
+
+
+### Features
+
+* renew vault connection ([3fb9650](https://github.com/nicholasM95/skoda-google-action/commit/3fb9650ce292bc08ee43762778d6e4d6272faf21))
+
 ## [1.3.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.3.0...v1.3.1) (2024-08-23)
 
 
