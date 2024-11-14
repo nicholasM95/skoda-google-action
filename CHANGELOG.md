@@ -1,3 +1,12 @@
+## [1.4.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.0...v1.4.1) (2024-11-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency be.nicholasmeyers.vwgroup-connector:vwgroup-connector to v1.3.0 ([1531fd2](https://github.com/nicholasM95/skoda-google-action/commit/1531fd27ed78d134c2b60b43bfba6241f62af5f9))
+* **deps:** update dependency io.swagger.parser.v3:swagger-parser to v2.1.23 ([c4a5754](https://github.com/nicholasM95/skoda-google-action/commit/c4a57541db73cefd40af56586743875f81feec47))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.3.5 ([35c8a59](https://github.com/nicholasM95/skoda-google-action/commit/35c8a591e00a93f15ffbb9c73c39141859b6e2e2))
+
 # [1.4.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.3.1...v1.4.0) (2024-10-09)
 
 
