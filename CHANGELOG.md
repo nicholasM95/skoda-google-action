@@ -1,3 +1,11 @@
+## [1.4.3](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.2...v1.4.3) (2024-11-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.swagger.parser.v3:swagger-parser to v2.1.24 ([d1ae09d](https://github.com/nicholasM95/skoda-google-action/commit/d1ae09d3235294fbab9c570dc06785d109372033))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.4.0 ([5693b15](https://github.com/nicholasM95/skoda-google-action/commit/5693b15b1c1ce0ab06a7161b7512b20f119c81f2))
+
 ## [1.4.2](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.1...v1.4.2) (2024-11-14)
 
 ## [1.4.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.0...v1.4.1) (2024-11-14)
