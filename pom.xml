@@ -12,7 +12,7 @@
 
     <groupId>be.nicholasmeyers</groupId>
     <artifactId>skoda-google-actions</artifactId>
-    <version>1.4.3</version>
+    <version>1.4.4-SNAPSHOT</version>
 
     <name>skoda-google-actions</name>
     <description>skoda-google-actions</description>
@@ -21,12 +21,23 @@
         <java.version>21</java.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2023.0.3</version>
+                <version>2024.0.0-RC1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
