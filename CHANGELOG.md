@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.3...v1.4.4) (2024-11-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.springframework.cloud:spring-cloud-dependencies to v2024.0.0-rc1 ([c4c0f77](https://github.com/nicholasM95/skoda-google-action/commit/c4c0f7759a1010978473c8f6eff7d418e3c2acd0))
+
 ## [1.4.3](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.2...v1.4.3) (2024-11-26)
 
 
