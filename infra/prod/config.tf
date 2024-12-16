@@ -7,7 +7,7 @@ terraform {
 
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "4.46.0"
+      version = "4.48.0"
     }
 
     vault = {
@@ -17,7 +17,7 @@ terraform {
 
     aws = {
       source  = "hashicorp/aws"
-      version = "5.77.0"
+      version = "5.81.0"
     }
   }
 
