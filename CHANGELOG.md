@@ -1,3 +1,11 @@
+## [1.4.5](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.4...v1.4.5) (2024-12-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency be.nicholasmeyers.vwgroup-connector:vwgroup-connector to v1.3.2 ([d20ee22](https://github.com/nicholasM95/skoda-google-action/commit/d20ee2216cccee6f24a61edbf4de6294ad01c8f6))
+* **deps:** update dependency org.springframework.cloud:spring-cloud-dependencies to v2024.0.0 ([c877c32](https://github.com/nicholasM95/skoda-google-action/commit/c877c32ddb6f6b63d410de5ec172b48185a20ebe))
+
 ## [1.4.4](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.3...v1.4.4) (2024-11-26)
 
 
