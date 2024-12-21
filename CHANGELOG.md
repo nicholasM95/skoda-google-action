@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.5...v1.5.0) (2024-12-21)
+
+
+### Features
+
+* publish on new host ([aa8d1e0](https://github.com/nicholasM95/skoda-google-action/commit/aa8d1e01c7e59a1127221c1434040c2e1740ec68))
+
+
+### Bug Fixes
+
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.4.1 ([80e83f0](https://github.com/nicholasM95/skoda-google-action/commit/80e83f0fbd371be3f3a3aecf63d0acbadb319afa))
+
 ## [1.4.5](https://github.com/nicholasM95/skoda-google-action/compare/v1.4.4...v1.4.5) (2024-12-16)
 
 
