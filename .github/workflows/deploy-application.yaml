@@ -37,8 +37,6 @@ jobs:
           method: jwt
           path: github-actions-secret
           secrets: |
-            github-actions-secret/data/secret CLOUDFLARE_API_KEY | CLOUDFLARE_API_KEY ;    
-            github-actions-secret/data/secret CLOUDFLARE_EMAIL | CLOUDFLARE_EMAIL ;  
             github-actions-secret/data/secret K8S_CONFIG | K8S_CONFIG ;
             github-actions-secret/data/secret DOCKER_CONFIG | DOCKER_CONFIG ;
             github-actions-secret/data/secret VAULT_TOKEN | VAULT_TOKEN ;
