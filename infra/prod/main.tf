@@ -3,13 +3,6 @@ module "vault" {
   vault_path = var.name
 }
 
-module "dns" {
-  source    = "git::https://github.com/nicholasM95/terraform-modules.git//modules/dns-cloudflare?ref=v1.8.5"
-  ip        = var.server_ip
-  name      = var.name
-  host_name = var.host_name
-}
-
 module "application" {
   source           = "git::https://github.com/nicholasM95/terraform-modules.git//modules/k8s-helm-release?ref=v1.8.5"
   image_tag        = var.image_tag

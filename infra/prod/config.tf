@@ -5,11 +5,6 @@ terraform {
       version = "2.16.1"
     }
 
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "4.48.0"
-    }
-
     vault = {
       source  = "hashicorp/vault"
       version = "4.5.0"

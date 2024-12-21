@@ -3,16 +3,6 @@ variable "docker_config" {
   type        = string
 }
 
-variable "server_ip" {
-  description = "Server ip"
-  type        = string
-}
-
-variable "host_name" {
-  description = "Host name"
-  type        = string
-}
-
 variable "vault_uri" {
   description = "Vault uri"
   type        = string
