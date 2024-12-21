@@ -40,7 +40,6 @@ jobs:
             github-actions-secret/data/secret CLOUDFLARE_API_KEY | CLOUDFLARE_API_KEY ;    
             github-actions-secret/data/secret CLOUDFLARE_EMAIL | CLOUDFLARE_EMAIL ;  
             github-actions-secret/data/secret K8S_CONFIG | K8S_CONFIG ;
-            github-actions-secret/data/secret PUBLIC_IP | PUBLIC_IP ;    
             github-actions-secret/data/secret DOCKER_CONFIG | DOCKER_CONFIG ;
             github-actions-secret/data/secret VAULT_TOKEN | VAULT_TOKEN ;
             github-actions-secret/data/secret KUBE_ROOT_CA_CRT | KUBE_ROOT_CA_CRT ;
@@ -77,10 +76,10 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST
+        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST
         working-directory: infra/prod
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var server_ip=$PUBLIC_IP -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var host_name="nicholasmeyers.be" -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST  -auto-approve
+        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST  -auto-approve
         working-directory: infra/prod
