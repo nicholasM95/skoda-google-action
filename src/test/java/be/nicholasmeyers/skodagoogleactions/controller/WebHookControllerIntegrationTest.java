@@ -17,9 +17,11 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.io.IOUtils.toByteArray;
+import static org.springframework.test.json.JsonCompareMode.STRICT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -82,7 +84,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
 
@@ -102,14 +104,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid input size",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                     .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
     }
 
@@ -163,7 +165,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -221,7 +223,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -279,7 +281,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -302,14 +304,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid payload",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -339,19 +341,20 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Status is empty",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
         public void queryEmptyData() throws Exception {
             StatusWebResponseResource status = new StatusWebResponseResource();
+            status.setData(List.of());
             ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
             Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
 
@@ -380,20 +383,21 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Data is not complete",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
         public void queryEmptyField() throws Exception {
             DataWebResponseResource data = new DataWebResponseResource();
             data.setId("0x030103FFFF");
+            data.setFields(List.of());
 
             StatusWebResponseResource status = new StatusWebResponseResource();
             status.setData(Collections.singletonList(data));
@@ -425,14 +429,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Fields are not complete",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -476,14 +480,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Fields are not complete",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
     }
 
@@ -542,7 +546,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -597,7 +601,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -643,14 +647,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Can't find location",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -698,14 +702,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Can't flash lights",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -761,7 +765,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -816,7 +820,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -862,14 +866,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Can't find location",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -917,14 +921,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Can't honk",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
 
@@ -975,7 +979,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1024,7 +1028,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1079,7 +1083,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1128,7 +1132,7 @@ public class WebHookControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1151,14 +1155,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid payload",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1184,14 +1188,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid command size",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1221,14 +1225,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid devices size",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1263,14 +1267,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid execution size",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
         @Test
@@ -1309,14 +1313,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"Invalid command action",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
 
     }
@@ -1343,14 +1347,14 @@ public class WebHookControllerIntegrationTest {
                         "detail":"UnsupportedOperationException",
                         "instance":"/webhook"
                     }
-                     """;
+                    """;
 
             mockMvc.perform(post("/webhook")
                             .accept(MediaType.APPLICATION_JSON)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(requestBody))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().json(responseBody, true));
+                    .andExpect(content().json(responseBody, STRICT));
         }
     }
 }

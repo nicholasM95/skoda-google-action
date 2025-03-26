@@ -9,7 +9,7 @@ on:
 
 env:
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-  JAVA_VERSION: '21'
+  JAVA_VERSION: '23'
   REGISTRY: ghcr.io
   IMAGE_NAME: nicholasm95/skoda-google-action
 
