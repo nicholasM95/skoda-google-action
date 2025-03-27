@@ -20,7 +20,12 @@
 
         <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>192.168.10.190:5000</destination>
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <customFields>
+                    <applicationName>${spring.application.name}</applicationName>
+                    <principal>%X{user}</principal>
+                </customFields>
+            </encoder>
         </appender>
 
         <root level="INFO">
