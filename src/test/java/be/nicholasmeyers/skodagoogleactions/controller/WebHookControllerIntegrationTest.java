@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collections;
@@ -38,25 +38,25 @@ public class WebHookControllerIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private CoolingClient coolingClient;
 
-    @MockBean
+    @MockitoBean
     private FlashClient flashClient;
 
-    @MockBean
+    @MockitoBean
     private HonkClient honkClient;
 
-    @MockBean
+    @MockitoBean
     private LocationClient locationClient;
 
-    @MockBean
+    @MockitoBean
     private RequestClient requestClient;
 
-    @MockBean
+    @MockitoBean
     private StatusClient statusClient;
 
-    @MockBean
+    @MockitoBean
     private VentilatorClient ventilatorClient;
 
     @Nested
