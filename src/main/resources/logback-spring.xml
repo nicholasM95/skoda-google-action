@@ -23,7 +23,6 @@
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <customFields>
                     <applicationName>${spring.application.name}</applicationName>
-                    <principal>%X{user}</principal>
                 </customFields>
             </encoder>
         </appender>
