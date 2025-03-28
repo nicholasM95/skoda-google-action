@@ -12,9 +12,12 @@
     </springProfile>
 
     <springProfile name="prod">
+        <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %highlight(%-5level) [%blue(%t)] %green(%logger{45}) : %msg%n%throwable</pattern>
+                <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+                <charset>utf8</charset>
             </encoder>
         </appender>
 
