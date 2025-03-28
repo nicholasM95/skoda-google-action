@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.6.0...v1.7.0) (2025-03-28)
+
+
+### Features
+
+* add logstash ([784f437](https://github.com/nicholasM95/skoda-google-action/commit/784f437dc72efc223a332af06baf59e696f1c6bf))
+
 # [1.6.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.5.0...v1.6.0) (2025-03-26)
 
 
