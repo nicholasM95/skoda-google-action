@@ -4,4 +4,4 @@ metadata:
   name: elastic-apm-agent
 binaryData:
   elastic-apm-agent-1.52.2.jar: |-
-    {{ .Files.Get "elastic-apm-agent-1.52.2.jar" | b64enc }}
+    {{ .Files.Get "elastic-apm-agent-1.52.2.jar.b64" }}
