@@ -30,7 +30,7 @@ spec:
       initContainers:
         - name: download-file
           image: curlimages/curl:latest
-          command: ['curl', '-o', '/tmp/elastic-apm-agent.jar', 'https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.52.2/elastic-apm-agent-1.52.2.jar']
+          command: ['curl', '-o', '/home/cnb/elastic-apm-agent.jar', 'https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.52.2/elastic-apm-agent-1.52.2.jar']
           volumeMounts:
             - name: elastic-apm-agent
               mountPath: /tmp
@@ -55,7 +55,6 @@ spec:
           volumeMounts:
             - mountPath: "/home/cnb/"
               name: elastic-apm-agent
-              subPath: elastic-apm-agent.jar
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
