@@ -178,10 +178,6 @@
                         <env>
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
-
-                            <ELASTIC_APM_SERVER_URL>http://192.168.10.190:8200</ELASTIC_APM_SERVER_URL>
-                            <ELASTIC_APM_SERVICE_NAME>skoda-google-actions</ELASTIC_APM_SERVICE_NAME>
-                            <ELASTIC_APM_ENVIRONMENT>production</ELASTIC_APM_ENVIRONMENT>
                         </env>
                     </image>
                 </configuration>
