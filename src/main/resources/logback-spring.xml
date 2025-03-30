@@ -13,6 +13,7 @@
 
     <springProfile name="prod">
         <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+        <property resource="application.properties" />
 
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
@@ -24,9 +25,7 @@
         <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>192.168.10.190:5000</destination>
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                <customFields>
-                    <applicationName>${spring.application.name}</applicationName>
-                </customFields>
+                <customFields>{"applicationName":"${spring.application.name}"}</customFields>
             </encoder>
         </appender>
 
