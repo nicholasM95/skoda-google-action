@@ -30,7 +30,7 @@ spec:
       initContainers:
         - name: download-file
           image: curlimages/curl:latest
-          command: ['curl', '-o', '/home/cnb/elastic-apm-agent.jar', 'https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.52.2/elastic-apm-agent-1.52.2.jar']
+          command: ['curl', '-o', '/tmp/elastic-apm-agent.jar', 'https://repo1.maven.org/maven2/co/elastic/apm/elastic-apm-agent/1.52.2/elastic-apm-agent-1.52.2.jar']
           volumeMounts:
             - name: elastic-apm-agent
               mountPath: /tmp
@@ -46,14 +46,14 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
             - name: JAVA_TOOL_OPTIONS
-              value: -javaagent:/home/cnb/elastic-apm-agent.jar
+              value: -javaagent:/tmp/elastic-apm-agent.jar
             - name: VAULT_URI
               valueFrom:
                 secretKeyRef:
                   name: {{ include "application.fullname" . }}-secret
                   key: vault.uri
           volumeMounts:
-            - mountPath: "/home/cnb/"
+            - mountPath: "/tmp/"
               name: elastic-apm-agent
           ports:
             - name: http
