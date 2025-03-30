@@ -175,20 +175,12 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <buildpacks>
-                            <buildpack>paketo-buildpacks/ca-certificates</buildpack>
-                            <buildpack>paketo-buildpacks/bellsoft-liberica</buildpack>
-                            <buildpack>paketo-buildpacks/syft</buildpack>
-                            <buildpack>paketo-buildpacks/executable-jar</buildpack>
-                            <buildpack>paketo-buildpacks/dist-zip</buildpack>
-                            <buildpack>paketo-buildpacks/spring-boot</buildpack>
-                            <buildpack>paketo-buildpacks/environment-variables</buildpack>
-                        </buildpacks>
                         <env>
                             <BP_INCLUDE_FILES>elastic-apm-agent-1.52.2.jar</BP_INCLUDE_FILES>
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
 
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
+                            <JAVA_TOOL_OPTIONS>-XX:+ExitOnOutOfMemoryError -javaagent:/workspace/agents/elastic-apm-agent-1.52.2.jar</JAVA_TOOL_OPTIONS>
 
                             <ELASTIC_APM_SERVER_URL>http://192.168.10.190:8200</ELASTIC_APM_SERVER_URL>
                             <ELASTIC_APM_SERVICE_NAME>skoda-google-actions</ELASTIC_APM_SERVICE_NAME>
