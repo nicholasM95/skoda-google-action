@@ -175,23 +175,21 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
-                        <buildpacks>
-                            <buildpack>gcr.io/paketo-buildpacks/spring-boot:latest</buildpack>
-                            <buildpack>gcr.io/paketo-buildpacks/elastic-apm:latest</buildpack>
-                        </buildpacks>
                         <env>
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
-                            <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
 
-                            <BPL_JVM_AGENT>elastic-apm</BPL_JVM_AGENT>
-                            <BPL_JVM_AGENT_ELASTIC_APM_VERSION>1.52.2</BPL_JVM_AGENT_ELASTIC_APM_VERSION>
-                            <BPL_JVM_AGENT_ELASTIC_APM_ENABLED>true</BPL_JVM_AGENT_ELASTIC_APM_ENABLED>
+                            <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS>-javaagent:/workspace/agents/elastic-apm-agent-1.52.2.jar</BPE_APPEND_JAVA_TOOL_OPTIONS>
+
 
                             <ELASTIC_APM_SERVER_URL>http://192.168.10.190:8200</ELASTIC_APM_SERVER_URL>
                             <ELASTIC_APM_SERVICE_NAME>skoda-google-actions</ELASTIC_APM_SERVICE_NAME>
                             <ELASTIC_APM_ENVIRONMENT>production</ELASTIC_APM_ENVIRONMENT>
                         </env>
                     </image>
+                    <agents>
+                        <agent>elastic-apm-agent-1.52.2.jar</agent>
+                    </agents>
                 </configuration>
             </plugin>
             <plugin>
