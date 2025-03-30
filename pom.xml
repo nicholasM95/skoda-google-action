@@ -176,6 +176,7 @@
                 <configuration>
                     <image>
                         <env>
+                            <BP_INCLUDE_FILES>elastic-apm-agent-1.52.2.jar</BP_INCLUDE_FILES>
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
 
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
