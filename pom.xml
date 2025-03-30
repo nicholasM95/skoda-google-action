@@ -183,6 +183,10 @@
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
 
+                            <BPL_JVM_AGENT>elastic-apm</BPL_JVM_AGENT>
+                            <BPL_JVM_AGENT_ELASTIC_APM_VERSION>1.52.2</BPL_JVM_AGENT_ELASTIC_APM_VERSION>
+                            <BPL_JVM_AGENT_ELASTIC_APM_ENABLED>true</BPL_JVM_AGENT_ELASTIC_APM_ENABLED>
+
                             <ELASTIC_APM_SERVER_URL>http://192.168.10.190:8200</ELASTIC_APM_SERVER_URL>
                             <ELASTIC_APM_SERVICE_NAME>skoda-google-actions</ELASTIC_APM_SERVICE_NAME>
                             <ELASTIC_APM_ENVIRONMENT>production</ELASTIC_APM_ENVIRONMENT>
