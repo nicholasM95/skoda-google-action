@@ -47,6 +47,12 @@ spec:
               value: prod
             - name: JAVA_TOOL_OPTIONS
               value: -javaagent:/tmp/elastic-apm-agent.jar
+            - name: ELASTIC_APM_SERVER_URL
+              value: http://192.168.10.190:8200
+            - name: ELASTIC_APM_SERVICE_NAME
+              value: skoda-google-action
+            - name: ELASTIC_APM_ENVIRONMENT
+              value: production
             - name: VAULT_URI
               valueFrom:
                 secretKeyRef:
