@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.7.0...v1.8.0) (2025-03-30)
+
+
+### Features
+
+* add apm logging ([4b6a860](https://github.com/nicholasM95/skoda-google-action/commit/4b6a860bd1357c6e1e14b9a0748d26019c02d5b8))
+
 # [1.7.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.6.0...v1.7.0) (2025-03-28)
 
 
