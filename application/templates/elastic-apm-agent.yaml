@@ -3,7 +3,5 @@ kind: ConfigMap
 metadata:
   name: elastic-apm-agent
 binaryData:
-  {{- range $path, $bytes := .Files.Glob "elastic-apm-agent-1.52.2.jar" }}
-  {{- $name := base $path }}
-  {{- $name }}: {{ $.Files.Get $path | b64enc }}
-  {{- end }}
+  elastic-apm-agent-1.52.2.jar: |-
+    {{ .Files.Get "elastic-apm-agent-1.52.2.jar" | b64enc }}
