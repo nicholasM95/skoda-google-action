@@ -180,7 +180,7 @@
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
 
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
-                            <JAVA_TOOL_OPTIONS>-Djava.security.properties=/layers/paketo-buildpacks_bellsoft-liberica/java-security-properties/java-security.properties -XX:+ExitOnOutOfMemoryError -XX:MaxDirectMemorySize=10M -Xmx413763K -XX:MaxMetaspaceSize=122812K -XX:ReservedCodeCacheSize=240M -Xss1M -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics -XX:SharedArchiveFile=application.jsa -Dorg.springframework.cloud.bindings.boot.enable=true</JAVA_TOOL_OPTIONS>
+                            <JAVA_OPTS_APPEND>-javaagent:/workspace/agents/elastic-apm-agent-1.52.2.jar</JAVA_OPTS_APPEND>
 
                             <ELASTIC_APM_SERVER_URL>http://192.168.10.190:8200</ELASTIC_APM_SERVER_URL>
                             <ELASTIC_APM_SERVICE_NAME>skoda-google-actions</ELASTIC_APM_SERVICE_NAME>
