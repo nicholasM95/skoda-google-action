@@ -175,6 +175,10 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <image>
+                        <buildpacks>
+                            <buildpack>gcr.io/paketo-buildpacks/spring-boot:latest</buildpack>
+                            <buildpack>gcr.io/paketo-buildpacks/elastic-apm:latest</buildpack>
+                        </buildpacks>
                         <env>
                             <BP_JVM_VERSION>21</BP_JVM_VERSION>
                             <BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
@@ -182,13 +186,8 @@
                             <ELASTIC_APM_SERVER_URL>http://192.168.10.190:8200</ELASTIC_APM_SERVER_URL>
                             <ELASTIC_APM_SERVICE_NAME>skoda-google-actions</ELASTIC_APM_SERVICE_NAME>
                             <ELASTIC_APM_ENVIRONMENT>production</ELASTIC_APM_ENVIRONMENT>
-
-                            <JAVA_TOOL_OPTIONS>-Djava.security.properties=/layers/paketo-buildpacks_bellsoft-liberica/java-security-properties/java-security.properties -XX:+ExitOnOutOfMemoryError -XX:MaxDirectMemorySize=10M -Xmx413763K -XX:MaxMetaspaceSize=122812K -XX:ReservedCodeCacheSize=240M -Xss1M -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics -XX:SharedArchiveFile=application.jsa -Dorg.springframework.cloud.bindings.boot.enable=true -javaagent:elastic-apm-agent-1.52.2.jar</JAVA_TOOL_OPTIONS>
                         </env>
                     </image>
-                    <agents>
-                        <agent>elastic-apm-agent-1.52.2.jar</agent>
-                    </agents>
                 </configuration>
             </plugin>
             <plugin>
