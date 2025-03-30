@@ -39,12 +39,16 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
             - name: JAVA_TOOL_OPTIONS
-              value: -Djava.security.properties=/layers/paketo-buildpacks_bellsoft-liberica/java-security-properties/java-security.properties -XX:+ExitOnOutOfMemoryError -XX:MaxDirectMemorySize=10M -Xmx413763K -XX:MaxMetaspaceSize=122812K -XX:ReservedCodeCacheSize=240M -Xss1M -XX:+UnlockDiagnosticVMOptions -XX:NativeMemoryTracking=summary -XX:+PrintNMTStatistics -XX:SharedArchiveFile=application.jsa -Dorg.springframework.cloud.bindings.boot.enable=true -javaagent:/workspace/agents/elastic-apm-agent-1.52.2.jar
+              value: -javaagent:/home/cnb/elastic-apm-agent-1.52.2.jar
             - name: VAULT_URI
               valueFrom:
                 secretKeyRef:
                   name: {{ include "application.fullname" . }}-secret
                   key: vault.uri
+          volumeMounts:
+            - mountPath: "/home/cnb/"
+              name: elastic-apm-agent
+              subPath: elastic-apm-agent-1.52.2.jar
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -72,6 +76,10 @@ spec:
             periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: elastic-apm-agent
+          configMap:
+            name: elastic-apm-agent
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
