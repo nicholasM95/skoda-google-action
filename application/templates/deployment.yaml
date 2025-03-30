@@ -39,7 +39,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: prod
             - name: JAVA_TOOL_OPTIONS
-              value: -javaagent:/home/cnb/elastic-apm-agent-1.52.2.jar
+              value: -javaagent:/home/cnb/elastic-apm-agent.jar
             - name: VAULT_URI
               valueFrom:
                 secretKeyRef:
@@ -48,7 +48,7 @@ spec:
           volumeMounts:
             - mountPath: "/home/cnb/"
               name: elastic-apm-agent
-              subPath: elastic-apm-agent-1.52.2.jar
+              subPath: elastic-apm-agent.jar
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
