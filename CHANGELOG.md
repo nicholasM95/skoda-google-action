@@ -1,3 +1,11 @@
+## [1.8.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.8.0...v1.8.1) (2025-04-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency be.nicholasmeyers.skoda-connector:skoda-connector to v1.1.0 ([e5417ac](https://github.com/nicholasM95/skoda-google-action/commit/e5417acdfee86e1ca65321e2b74679029803cd90))
+* **deps:** update dependency net.logstash.logback:logstash-logback-encoder to v8.1 ([40b2ec8](https://github.com/nicholasM95/skoda-google-action/commit/40b2ec8f354439b95ddfa34495035cc8dc547278))
+
 # [1.8.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.7.0...v1.8.0) (2025-03-30)
 
 
