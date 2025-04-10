@@ -1,6 +1,6 @@
 package be.nicholasmeyers.skodagoogleactions.config;
 
-import be.nicholasmeyers.vwgroupconnector.service.ConnectorService;
+import be.nicholasmeyers.skodaconnector.service.ConnectorService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
