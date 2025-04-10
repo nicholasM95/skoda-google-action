@@ -12,7 +12,7 @@
 
     <groupId>be.nicholasmeyers</groupId>
     <artifactId>skoda-google-actions</artifactId>
-    <version>1.8.0</version>
+    <version>1.8.1-SNAPSHOT</version>
 
     <name>skoda-google-actions</name>
     <description>skoda-google-actions</description>
@@ -111,9 +111,9 @@
         </dependency>
 
         <dependency>
-            <groupId>be.nicholasmeyers.vwgroup-connector</groupId>
-            <artifactId>vwgroup-connector</artifactId>
-            <version>2.0.0</version>
+            <groupId>be.nicholasmeyers.skoda-connector</groupId>
+            <artifactId>skoda-connector</artifactId>
+            <version>1.1.0</version>
         </dependency>
 
         <dependency>
@@ -137,7 +137,7 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>8.0</version>
+            <version>8.1</version>
         </dependency>
 
         <dependency>
@@ -165,7 +165,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.36</version>
+                            <version>1.18.38</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
