@@ -6,13 +6,13 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.4.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>be.nicholasmeyers</groupId>
     <artifactId>skoda-google-actions</artifactId>
-    <version>1.8.1</version>
+    <version>1.8.2-SNAPSHOT</version>
 
     <name>skoda-google-actions</name>
     <description>skoda-google-actions</description>
@@ -125,7 +125,7 @@
         <dependency>
             <groupId>io.swagger.parser.v3</groupId>
             <artifactId>swagger-parser</artifactId>
-            <version>2.1.26</version>
+            <version>2.1.27</version>
         </dependency>
 
         <dependency>
@@ -185,7 +185,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.12.0</version>
+                <version>7.13.0</version>
                 <executions>
                     <execution>
                         <goals>
