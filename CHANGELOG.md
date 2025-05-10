@@ -1,3 +1,11 @@
+## [1.8.2](https://github.com/nicholasM95/skoda-google-action/compare/v1.8.1...v1.8.2) (2025-05-10)
+
+
+### Bug Fixes
+
+* **deps:** update dependency io.swagger.parser.v3:swagger-parser to v2.1.27 ([fc4e724](https://github.com/nicholasM95/skoda-google-action/commit/fc4e724e3e2fd9e2b060d7de7aca6cf67ab45bed))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.4.5 ([901c4b8](https://github.com/nicholasM95/skoda-google-action/commit/901c4b81f85e0c043ade10eddd9d0eaca1bade5d))
+
 ## [1.8.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.8.0...v1.8.1) (2025-04-10)
 
 
