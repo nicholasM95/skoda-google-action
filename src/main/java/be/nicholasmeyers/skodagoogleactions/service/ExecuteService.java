@@ -1,9 +1,12 @@
 package be.nicholasmeyers.skodagoogleactions.service;
 
-import be.nicholasmeyers.skodagoogleactions.client.*;
-import be.nicholasmeyers.skodagoogleactions.client.resource.*;
+import be.nicholasmeyers.skoda.api.client.CarService;
+import be.nicholasmeyers.skoda.api.client.CarServiceException;
 import be.nicholasmeyers.skodagoogleactions.config.SkodaConfig;
-import be.nicholasmeyers.skodagoogleactions.exception.*;
+import be.nicholasmeyers.skodagoogleactions.exception.CommandRequestException;
+import be.nicholasmeyers.skodagoogleactions.exception.FlashException;
+import be.nicholasmeyers.skodagoogleactions.exception.HonkException;
+import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
 import be.nicholasmeyers.skodagoogleactions.resource.request.CommandRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.request.InputRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.response.HookWebResponseResource;
@@ -12,7 +15,6 @@ import be.nicholasmeyers.skodagoogleactions.resource.response.execute.PayloadExe
 import be.nicholasmeyers.skodagoogleactions.resource.response.execute.StateExecuteResource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -20,15 +22,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.AIRCO;
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_HONK_HORN;
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_LIGHT_FLASH;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service("action.devices.EXECUTE")
 public class ExecuteService implements WebhookService {
 
-    private final FlashClient flashClient;
-    private final HonkClient honkClient;
-    private final LocationClient locationClient;
-    private final VentilatorClient ventilatorClient;
+    private final CarService carService;
     private final SkodaConfig skodaConfig;
 
     @Override
@@ -72,72 +75,58 @@ public class ExecuteService implements WebhookService {
 
     private String handleCommand(UUID device, boolean on) {
         if (on) {
-            if (UUID.fromString("6abb7eaa-08a8-44c0-83a7-9c3c658bd63e").equals(device)) {
+            if (UUID.fromString(BUTTON_LIGHT_FLASH).equals(device)) {
                 // Flash
-                LocationWebResponseResource location = getLocation();
-                FlashWebResponseResource flash = flash(location.getLatitude(), location.getLongitude());
-                if ("REQUEST_IN_PROGRESS".equals(flash.getStatus())) {
+                String flash = flash();
+                if ("REQUEST_IN_PROGRESS".equals(flash)) {
                     return "SUCCESS";
                 }
-            } else if (UUID.fromString("883f8b70-1649-41f2-8a53-b41df7214f4a").equals(device)) {
+            } else if (UUID.fromString(BUTTON_HONK_HORN).equals(device)) {
                 // Honk
-                LocationWebResponseResource location = getLocation();
-                HonkWebResponseResource honk = honk(location.getLatitude(), location.getLongitude());
-                if ("REQUEST_IN_PROGRESS".equals(honk.getStatus())) {
+                String honk = honk();
+                if ("REQUEST_IN_PROGRESS".equals(honk)) {
                     return "SUCCESS";
                 }
-            } else if (UUID.fromString("b1c18c45-8e42-493c-a3c0-928bd631caf7").equals(device)) {
+            } else if (UUID.fromString(AIRCO).equals(device)) {
                 // Start Ventilator
-                VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(30, skodaConfig.getPin());
-                ResponseEntity<VentilatorWebResponseResource> ventilatorWebResponseResource = ventilatorClient.startVentilator(skodaConfig.getVin(), ventilatorWebRequestResource);
-                return handleVentilatorRequest(ventilatorWebResponseResource);
+                String id = carService.startVentilator(skodaConfig.getVin(), skodaConfig.getPin(), 30);
+                return handleVentilatorRequest(id);
             }
-        } else if (UUID.fromString("b1c18c45-8e42-493c-a3c0-928bd631caf7").equals(device)) {
+        } else if (UUID.fromString(AIRCO).equals(device)) {
             // Stop Ventilator
-            VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(0, skodaConfig.getPin());
-            ResponseEntity<VentilatorWebResponseResource> ventilatorWebResponseResource = ventilatorClient.stopVentilator(skodaConfig.getVin(), ventilatorWebRequestResource);
-            return handleVentilatorRequest(ventilatorWebResponseResource);
+            String id = carService.stopVentilator(skodaConfig.getVin(),  skodaConfig.getPin());
+            return handleVentilatorRequest(id);
         }
         return "FAILURE";
     }
 
     private boolean isOn(UUID device, String status, boolean on) {
-        if (UUID.fromString("b1c18c45-8e42-493c-a3c0-928bd631caf7").equals(device)) {
+        if (UUID.fromString(AIRCO).equals(device)) {
             return "SUCCESS".equals(status) && on;
         }
         return false;
     }
 
-    private LocationWebResponseResource getLocation() {
-        ResponseEntity<LocationWebResponseResource> location = locationClient.getLocation(skodaConfig.getVin());
-        if (location != null && location.getStatusCode().is2xxSuccessful() && location.getBody() != null
-                && location.getBody().getLatitude() != null && location.getBody().getLongitude() != null) {
-            return location.getBody();
+    private String flash() {
+        try {
+            return carService.flash(skodaConfig.getVin(), 30);
+        } catch (CarServiceException e) {
+            log.error("{} --- {}", e.getMessage(), e.getOriginalMessage());
+            throw new FlashException("Can't flash lights");
         }
-        throw new LocationException("Can't find location");
     }
 
-    private FlashWebResponseResource flash(int latitude, int longitude) {
-        FlashWebRequestResource flashWebRequestResource = new FlashWebRequestResource(latitude, longitude, 30);
-        ResponseEntity<FlashWebResponseResource> flash = flashClient.flash(skodaConfig.getVin(), flashWebRequestResource);
-        if (flash != null && flash.getStatusCode().is2xxSuccessful() && flash.getBody() != null) {
-            return flash.getBody();
+    private String honk() {
+        try {
+            return carService.honk(skodaConfig.getVin(), 30);
+        } catch (CarServiceException e) {
+            log.error("{} --- {}", e.getMessage(), e.getOriginalMessage());
+            throw new HonkException("Can't honk");
         }
-        throw new FlashException("Can't flash lights");
     }
 
-    private HonkWebResponseResource honk(int latitude, int longitude) {
-        HonkWebRequestResource honkWebRequestResource = new HonkWebRequestResource(latitude, longitude, 30);
-        ResponseEntity<HonkWebResponseResource> honk = honkClient.honk(skodaConfig.getVin(), honkWebRequestResource);
-        if (honk != null && honk.getStatusCode().is2xxSuccessful() && honk.getBody() != null) {
-            return honk.getBody();
-        }
-        throw new HonkException("Can't honk");
-    }
-
-    private String handleVentilatorRequest(ResponseEntity<VentilatorWebResponseResource> ventilatorWebResponseResource) {
-        if (ventilatorWebResponseResource != null && ventilatorWebResponseResource.getStatusCode().is2xxSuccessful() &&
-                ventilatorWebResponseResource.getBody() != null && ventilatorWebResponseResource.getBody().getId() != null) {
+    private String handleVentilatorRequest(String id) {
+        if (id != null) {
             return "SUCCESS";
         }
         return "FAILURE";
