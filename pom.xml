@@ -12,7 +12,7 @@
 
     <groupId>be.nicholasmeyers</groupId>
     <artifactId>skoda-google-actions</artifactId>
-    <version>1.8.2</version>
+    <version>1.9.0</version>
 
     <name>skoda-google-actions</name>
     <description>skoda-google-actions</description>
