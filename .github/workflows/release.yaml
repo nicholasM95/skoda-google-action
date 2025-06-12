@@ -28,14 +28,14 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Set up JDK
-        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # v4.7.1
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: 'liberica'
           cache: 'maven'
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v4.3.0
+        uses: actions/setup-node@v4.4.0
         with:
           node-version: 20
 
@@ -44,7 +44,7 @@ jobs:
           npm install semantic-release @semantic-release/exec @semantic-release/changelog @semantic-release/github
 
       - name: Log in to the Container registry
-        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
+        uses: docker/login-action@6d4b68b490aef8836e8fb5e50ee7b3bdfa5894f0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
