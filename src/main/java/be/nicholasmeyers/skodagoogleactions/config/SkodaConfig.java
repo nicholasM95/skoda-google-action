@@ -14,4 +14,5 @@ public class SkodaConfig {
     private String password;
     private String pin;
     private String vin;
+    private String api;
 }
