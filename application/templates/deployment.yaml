@@ -43,9 +43,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "application.fullname" . }}-secret
                   key: vault.uri
-          volumeMounts:
-            - mountPath: "/tmp/"
-              name: elastic-apm-agent
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
