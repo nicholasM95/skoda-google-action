@@ -8,10 +8,17 @@ import be.nicholasmeyers.skodagoogleactions.resource.response.sync.NameSyncResou
 import be.nicholasmeyers.skodagoogleactions.resource.response.sync.PayloadSyncResource;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.AIRCO;
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_HONK_HORN;
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_LIGHT_FLASH;
+import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.KILOMETER_SENSOR;
 
 @Service("action.devices.SYNC")
 public class SyncService implements WebhookService {
+
     @Override
     public HookWebResponseResource handleAction(InputRequestResource resource) {
         PayloadSyncResource payloadSyncResource = new PayloadSyncResource();
@@ -22,8 +29,8 @@ public class SyncService implements WebhookService {
 
     private List<DeviceSyncResource> createDevices() {
         List<DeviceSyncResource> deviceSyncResources = new ArrayList<>();
-        deviceSyncResources.add(createButtonDevice("6abb7eaa-08a8-44c0-83a7-9c3c658bd63e", "knipperlicht"));
-        deviceSyncResources.add(createButtonDevice("883f8b70-1649-41f2-8a53-b41df7214f4a", "toeter"));
+        deviceSyncResources.add(createButtonDevice(BUTTON_LIGHT_FLASH, "knipperlicht"));
+        deviceSyncResources.add(createButtonDevice(BUTTON_HONK_HORN, "toeter"));
         deviceSyncResources.add(createAirCooler());
         deviceSyncResources.add(createKilometerSensor());
 
@@ -39,23 +46,21 @@ public class SyncService implements WebhookService {
     }
 
     private DeviceSyncResource createAirCooler() {
-        String id = "b1c18c45-8e42-493c-a3c0-928bd631caf7";
         String name = "Airco";
         NameSyncResource nameSyncResource = createNameSyncResource(name);
         String[] traits = {"action.devices.traits.OnOff"};
 
         DeviceInfoSyncResource deviceInfoSyncResource = createDeviceInfoSyncResource();
-        return createDeviceSyncResource(id, "action.devices.types.AIRCOOLER", traits, nameSyncResource, deviceInfoSyncResource);
+        return createDeviceSyncResource(AIRCO, "action.devices.types.AIRCOOLER", traits, nameSyncResource, deviceInfoSyncResource);
     }
 
     private DeviceSyncResource createKilometerSensor() {
-        String id = "2ec009da-cd6f-4adc-9021-9e7861358408";
         String name = "Skoda";
         NameSyncResource nameSyncResource = createNameSyncResource(name);
         String[] traits = {"action.devices.traits.EnergyStorage"};
 
         DeviceInfoSyncResource deviceInfoSyncResource = createDeviceInfoSyncResource();
-        return createDeviceSyncResource(id, "action.devices.types.SENSOR", traits, nameSyncResource, deviceInfoSyncResource);
+        return createDeviceSyncResource(KILOMETER_SENSOR, "action.devices.types.SENSOR", traits, nameSyncResource, deviceInfoSyncResource);
     }
 
     private NameSyncResource createNameSyncResource(String value) {
@@ -71,7 +76,8 @@ public class SyncService implements WebhookService {
         return new DeviceInfoSyncResource("skoda-smart-home-inc", "hs1234", "3.2", "11.4");
     }
 
-    private DeviceSyncResource createDeviceSyncResource(String id, String type, String[] traits, NameSyncResource name, DeviceInfoSyncResource deviceInfoSyncResource) {
+    private DeviceSyncResource createDeviceSyncResource(String id, String type, String[] traits, NameSyncResource name,
+                                                        DeviceInfoSyncResource deviceInfoSyncResource) {
         return new DeviceSyncResource(id, type, traits, name, true, "Auto", deviceInfoSyncResource);
     }
 }

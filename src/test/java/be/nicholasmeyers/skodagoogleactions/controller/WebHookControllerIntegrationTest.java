@@ -1,7 +1,10 @@
 package be.nicholasmeyers.skodagoogleactions.controller;
 
-import be.nicholasmeyers.skodagoogleactions.client.*;
-import be.nicholasmeyers.skodagoogleactions.client.resource.*;
+import be.nicholasmeyers.skoda.api.client.CarCoolingInfo;
+import be.nicholasmeyers.skoda.api.client.CarReport;
+import be.nicholasmeyers.skoda.api.client.CarService;
+import be.nicholasmeyers.skoda.api.client.CarServiceException;
+import be.nicholasmeyers.skoda.api.client.CarStatus;
 import be.nicholasmeyers.skodagoogleactions.core.security.SecurityConfig;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -11,13 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.io.IOUtils.toByteArray;
@@ -39,25 +38,7 @@ public class WebHookControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private CoolingClient coolingClient;
-
-    @MockitoBean
-    private FlashClient flashClient;
-
-    @MockitoBean
-    private HonkClient honkClient;
-
-    @MockitoBean
-    private LocationClient locationClient;
-
-    @MockitoBean
-    private RequestClient requestClient;
-
-    @MockitoBean
-    private StatusClient statusClient;
-
-    @MockitoBean
-    private VentilatorClient ventilatorClient;
+    private CarService carService;
 
     @Nested
     class Sync {
@@ -119,18 +100,17 @@ public class WebHookControllerIntegrationTest {
     class Query {
         @Test
         public void query() throws Exception {
-            FieldWebResponseResource field = new FieldWebResponseResource();
-            field.setId("0x0301030006");
-            field.setValue("450");
+            CarStatus carStatus = Mockito.mock(CarStatus.class);
+            Mockito.when(carStatus.getKilometer()).thenReturn(450);
+            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
 
-            DataWebResponseResource data = new DataWebResponseResource();
-            data.setId("0x030103FFFF");
-            data.setFields(Collections.singletonList(field));
+            CarReport carReport = Mockito.mock(CarReport.class);
+            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(0);
 
-            StatusWebResponseResource status = new StatusWebResponseResource();
-            status.setData(Collections.singletonList(data));
-            ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
-            Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
+            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
+            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
+
+            Mockito.when(carService.getCooling("QMGAG8BEQSY003476")).thenReturn(carCoolingInfo);
 
             String requestBody = """
                     {
@@ -170,25 +150,17 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void queryAirCoolerOn() throws Exception {
-            FieldWebResponseResource field = new FieldWebResponseResource();
-            field.setId("0x0301030006");
-            field.setValue("450");
+            CarStatus carStatus = Mockito.mock(CarStatus.class);
+            Mockito.when(carStatus.getKilometer()).thenReturn(450);
+            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
 
-            DataWebResponseResource data = new DataWebResponseResource();
-            data.setId("0x030103FFFF");
-            data.setFields(Collections.singletonList(field));
+            CarReport carReport = Mockito.mock(CarReport.class);
+            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(20);
 
-            StatusWebResponseResource status = new StatusWebResponseResource();
-            status.setData(Collections.singletonList(data));
-            ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
-            Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
+            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
+            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
 
-            ReportWebResponseResource report = new ReportWebResponseResource();
-            report.setRemainingClimateTime(20);
-            CoolingWebResponseResource cooling  = new CoolingWebResponseResource();
-            cooling.setReport(report);
-            ResponseEntity<CoolingWebResponseResource> coolingResponseEntity = ResponseEntity.ok(cooling);
-            Mockito.when(coolingClient.getCoolingStatus("QMGAG8BEQSY003476")).thenReturn(coolingResponseEntity);
+            Mockito.when(carService.getCooling("QMGAG8BEQSY003476")).thenReturn(carCoolingInfo);
 
             String requestBody = """
                     {
@@ -228,25 +200,68 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void queryAirCoolerOff() throws Exception {
-            FieldWebResponseResource field = new FieldWebResponseResource();
-            field.setId("0x0301030006");
-            field.setValue("450");
+            CarStatus carStatus = Mockito.mock(CarStatus.class);
+            Mockito.when(carStatus.getKilometer()).thenReturn(450);
+            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
 
-            DataWebResponseResource data = new DataWebResponseResource();
-            data.setId("0x030103FFFF");
-            data.setFields(Collections.singletonList(field));
+            CarReport carReport = Mockito.mock(CarReport.class);
+            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(0);
 
-            StatusWebResponseResource status = new StatusWebResponseResource();
-            status.setData(Collections.singletonList(data));
-            ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
-            Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
+            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
+            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
 
-            ReportWebResponseResource report = new ReportWebResponseResource();
-            report.setRemainingClimateTime(0);
-            CoolingWebResponseResource cooling  = new CoolingWebResponseResource();
-            cooling.setReport(report);
-            ResponseEntity<CoolingWebResponseResource> coolingResponseEntity = ResponseEntity.ok(cooling);
-            Mockito.when(coolingClient.getCoolingStatus("QMGAG8BEQSY003476")).thenReturn(coolingResponseEntity);
+            Mockito.when(carService.getCooling("QMGAG8BEQSY003476")).thenReturn(carCoolingInfo);
+
+            String requestBody = """
+                    {
+                        "requestId": "123",
+                        "inputs": [
+                            {
+                                "intent": "action.devices.QUERY",
+                                "payload": {
+                                    "devices": [
+                                        {
+                                            "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
+                                        },{
+                                            "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
+                                        },{
+                                            "id": "b1c18c45-8e42-493c-a3c0-928bd631caf7"
+                                        },{
+                                            "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    }
+                    """;
+
+            String responseBody = new String(toByteArray(requireNonNull(
+                    this.getClass().getResourceAsStream("query_1_response.json"))
+            ));
+
+            mockMvc.perform(post("/webhook")
+                            .accept(MediaType.APPLICATION_JSON)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody, STRICT));
+        }
+
+        @Test
+        public void queryAirCoolerException() throws Exception {
+            CarStatus carStatus = Mockito.mock(CarStatus.class);
+            Mockito.when(carStatus.getKilometer()).thenReturn(450);
+            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
+
+            CarReport carReport = Mockito.mock(CarReport.class);
+            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(0);
+
+            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
+            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
+
+            Mockito.when(carService.getCooling("QMGAG8BEQSY003476"))
+                    .thenThrow(new CarServiceException("", ""));
 
             String requestBody = """
                     {
@@ -315,145 +330,8 @@ public class WebHookControllerIntegrationTest {
         }
 
         @Test
-        public void queryEmptyStatus() throws Exception {
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.QUERY",
-                                "payload": {
-                                    "devices": [
-                                       {
-                                            "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Status is empty",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void queryEmptyData() throws Exception {
-            StatusWebResponseResource status = new StatusWebResponseResource();
-            status.setData(List.of());
-            ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
-            Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.QUERY",
-                                "payload": {
-                                    "devices": [
-                                       {
-                                            "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Data is not complete",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void queryEmptyField() throws Exception {
-            DataWebResponseResource data = new DataWebResponseResource();
-            data.setId("0x030103FFFF");
-            data.setFields(List.of());
-
-            StatusWebResponseResource status = new StatusWebResponseResource();
-            status.setData(Collections.singletonList(data));
-            ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
-            Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.QUERY",
-                                "payload": {
-                                    "devices": [
-                                       {
-                                            "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Fields are not complete",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
         public void queryInvalidKilometer() throws Exception {
-            FieldWebResponseResource field = new FieldWebResponseResource();
-            field.setId("0x0301030006");
-            field.setValue("ERROR");
-
-            DataWebResponseResource data = new DataWebResponseResource();
-            data.setId("0x030103FFFF");
-            data.setFields(Collections.singletonList(field));
-
-            StatusWebResponseResource status = new StatusWebResponseResource();
-            status.setData(Collections.singletonList(data));
-            ResponseEntity<StatusWebResponseResource> statusResponseEntity = ResponseEntity.ok(status);
-            Mockito.when(statusClient.getStatus("QMGAG8BEQSY003476")).thenReturn(statusResponseEntity);
-
+            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenThrow(new CarServiceException("", ""));
 
             String requestBody = """
                     {
@@ -477,7 +355,7 @@ public class WebHookControllerIntegrationTest {
                     {
                         "title":"Skoda Service unavailable",
                         "status":503,
-                        "detail":"Fields are not complete",
+                        "detail":"Can't get kilometer information",
                         "instance":"/webhook"
                     }
                     """;
@@ -495,17 +373,7 @@ public class WebHookControllerIntegrationTest {
     class Execute {
         @Test
         public void executeSwitch1() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            location.setLatitude(1);
-            location.setLongitude(1);
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
-
-            FlashWebResponseResource flash = new FlashWebResponseResource();
-            flash.status("REQUEST_IN_PROGRESS");
-            ResponseEntity<FlashWebResponseResource> flashResponseEntity = ResponseEntity.ok(flash);
-            FlashWebRequestResource flashWebRequestResource = new FlashWebRequestResource(1, 1, 30);
-            Mockito.when(flashClient.flash("QMGAG8BEQSY003476", flashWebRequestResource)).thenReturn(flashResponseEntity);
+            Mockito.when(carService.flash("QMGAG8BEQSY003476", 30)).thenReturn("REQUEST_IN_PROGRESS");
 
             String requestBody = """
                     {
@@ -551,16 +419,7 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeSwitch1Failure() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            location.setLatitude(1);
-            location.setLongitude(1);
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
-
-            FlashWebResponseResource flash = new FlashWebResponseResource();
-            ResponseEntity<FlashWebResponseResource> flashResponseEntity = ResponseEntity.ok(flash);
-            FlashWebRequestResource flashWebRequestResource = new FlashWebRequestResource(1, 1, 30);
-            Mockito.when(flashClient.flash("QMGAG8BEQSY003476", flashWebRequestResource)).thenReturn(flashResponseEntity);
+            Mockito.when(carService.flash("QMGAG8BEQSY003476", 30)).thenReturn(null);
 
             String requestBody = """
                     {
@@ -605,65 +464,9 @@ public class WebHookControllerIntegrationTest {
         }
 
         @Test
-        public void executeSwitch1LocationNotFound() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Can't find location",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
         public void executeSwitch1FlashFailed() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            location.setLatitude(1);
-            location.setLongitude(1);
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
+            Mockito.when(carService.flash("QMGAG8BEQSY003476", 30))
+                    .thenThrow(new CarServiceException("", ""));
 
             String requestBody = """
                     {
@@ -714,17 +517,7 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeSwitch2() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            location.setLatitude(1);
-            location.setLongitude(1);
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
-
-            HonkWebResponseResource honk = new HonkWebResponseResource();
-            honk.status("REQUEST_IN_PROGRESS");
-            ResponseEntity<HonkWebResponseResource> honkResponseEntity = ResponseEntity.ok(honk);
-            HonkWebRequestResource honkWebRequestResource = new HonkWebRequestResource(1, 1, 30);
-            Mockito.when(honkClient.honk("QMGAG8BEQSY003476", honkWebRequestResource)).thenReturn(honkResponseEntity);
+            Mockito.when(carService.honk("QMGAG8BEQSY003476", 30)).thenReturn("REQUEST_IN_PROGRESS");
 
             String requestBody = """
                     {
@@ -770,16 +563,7 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeSwitch2Failure() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            location.setLatitude(1);
-            location.setLongitude(1);
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
-
-            HonkWebResponseResource honk = new HonkWebResponseResource();
-            ResponseEntity<HonkWebResponseResource> honkResponseEntity = ResponseEntity.ok(honk);
-            HonkWebRequestResource honkWebRequestResource = new HonkWebRequestResource(1, 1, 30);
-            Mockito.when(honkClient.honk("QMGAG8BEQSY003476", honkWebRequestResource)).thenReturn(honkResponseEntity);
+            Mockito.when(carService.honk("QMGAG8BEQSY003476", 30)).thenReturn(null);
 
             String requestBody = """
                     {
@@ -824,65 +608,9 @@ public class WebHookControllerIntegrationTest {
         }
 
         @Test
-        public void executeSwitch2LocationNotFound() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Can't find location",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
         public void executeSwitch2HonkFailed() throws Exception {
-            LocationWebResponseResource location = new LocationWebResponseResource();
-            location.setLatitude(1);
-            location.setLongitude(1);
-            ResponseEntity<LocationWebResponseResource> locationResponseEntity = ResponseEntity.ok(location);
-            Mockito.when(locationClient.getLocation("QMGAG8BEQSY003476")).thenReturn(locationResponseEntity);
+            Mockito.when(carService.honk("QMGAG8BEQSY003476", 30))
+                    .thenThrow(new CarServiceException("", ""));
 
             String requestBody = """
                     {
@@ -934,11 +662,8 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOn() throws Exception {
-            VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(30, "1111");
-            VentilatorWebResponseResource ventilator = new VentilatorWebResponseResource();
-            ventilator.setId("5555");
-            ResponseEntity<VentilatorWebResponseResource> ventilatorResponseEntity = ResponseEntity.ok(ventilator);
-            Mockito.when(ventilatorClient.startVentilator("QMGAG8BEQSY003476", ventilatorWebRequestResource)).thenReturn(ventilatorResponseEntity);
+           Mockito.when(carService.startVentilator("QMGAG8BEQSY003476", "1111", 30))
+                    .thenReturn("5555");
 
             String requestBody = """
                     {
@@ -984,10 +709,7 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOnFailure() throws Exception {
-            VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(30, "1111");
-            VentilatorWebResponseResource ventilator = new VentilatorWebResponseResource();
-            ResponseEntity<VentilatorWebResponseResource> ventilatorResponseEntity = ResponseEntity.ok(ventilator);
-            Mockito.when(ventilatorClient.startVentilator("QMGAG8BEQSY003476", ventilatorWebRequestResource)).thenReturn(ventilatorResponseEntity);
+            Mockito.when(carService.startVentilator("QMGAG8BEQSY003476", "1111", 30)).thenReturn(null);
 
             String requestBody = """
                     {
@@ -1033,16 +755,8 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOff() throws Exception {
-            VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(0, "1111");
-            VentilatorWebResponseResource ventilator = new VentilatorWebResponseResource();
-            ventilator.setId("5555");
-            ResponseEntity<VentilatorWebResponseResource> ventilatorResponseEntity = ResponseEntity.ok(ventilator);
-            Mockito.when(ventilatorClient.stopVentilator("QMGAG8BEQSY003476", ventilatorWebRequestResource)).thenReturn(ventilatorResponseEntity);
-
-            RequestWebResponseResource request = new RequestWebResponseResource();
-            request.setStatus("request_successful");
-            ResponseEntity<RequestWebResponseResource> requestResponseEntity = ResponseEntity.ok(request);
-            Mockito.when(requestClient.getRequest("QMGAG8BEQSY003476", "5555")).thenReturn(requestResponseEntity);
+            Mockito.when(carService.stopVentilator("QMGAG8BEQSY003476", "1111")).thenReturn("5555");
+            Mockito.when(carService.getRequest("QMGAG8BEQSY003476", "5555")).thenReturn("request_successful");
 
             String requestBody = """
                     {
@@ -1088,10 +802,7 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOffFailure() throws Exception {
-            VentilatorWebRequestResource ventilatorWebRequestResource = new VentilatorWebRequestResource(0, "1111");
-            VentilatorWebResponseResource ventilator = new VentilatorWebResponseResource();
-            ResponseEntity<VentilatorWebResponseResource> ventilatorResponseEntity = ResponseEntity.ok(ventilator);
-            Mockito.when(ventilatorClient.stopVentilator("QMGAG8BEQSY003476", ventilatorWebRequestResource)).thenReturn(ventilatorResponseEntity);
+            Mockito.when(carService.stopVentilator("QMGAG8BEQSY003476", "1111")).thenReturn(null);
 
             String requestBody = """
                     {
