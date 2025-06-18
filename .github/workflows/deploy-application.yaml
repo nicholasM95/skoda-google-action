@@ -40,8 +40,6 @@ jobs:
             github-actions-secret/data/secret K8S_CONFIG | K8S_CONFIG ;
             github-actions-secret/data/secret DOCKER_CONFIG | DOCKER_CONFIG ;
             github-actions-secret/data/secret VAULT_TOKEN | VAULT_TOKEN ;
-            github-actions-secret/data/secret KUBE_ROOT_CA_CRT | KUBE_ROOT_CA_CRT ;
-            github-actions-secret/data/secret KUBE_INTERNAL_HOST | KUBE_INTERNAL_HOST ;
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@f24d7193d98baebaeacc7e2227925dd47cc267f5 # v4.2.0
@@ -74,10 +72,10 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST
+        run: terraform plan -var image_tag=${{ github.event.inputs.image_tag }} -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }}
         working-directory: infra/prod
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -var kubernetes_ca_cert=$KUBE_ROOT_CA_CRT -var kubernetes_internal_host=$KUBE_INTERNAL_HOST  -auto-approve
+        run: terraform apply -var image_tag=${{ github.event.inputs.image_tag }} -var docker_config=$DOCKER_CONFIG -var vault_uri=${{ env.VAULT_ADDR }} -auto-approve
         working-directory: infra/prod

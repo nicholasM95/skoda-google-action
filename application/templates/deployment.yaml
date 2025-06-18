@@ -38,11 +38,6 @@ spec:
               value: Europe/Brussels
             - name: SPRING_PROFILES_ACTIVE
               value: prod
-            - name: VAULT_URI
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "application.fullname" . }}-secret
-                  key: vault.uri
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}

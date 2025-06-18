@@ -3,11 +3,6 @@ variable "docker_config" {
   type        = string
 }
 
-variable "vault_uri" {
-  description = "Vault uri"
-  type        = string
-}
-
 variable "aws_region" {
   description = "aws region"
   type        = string
@@ -28,15 +23,5 @@ variable "name" {
 
 variable "image_tag" {
   description = "Image tag"
-  type        = string
-}
-
-variable "kubernetes_ca_cert" {
-  description = "Kubernetes ca cert"
-  type        = string
-}
-
-variable "kubernetes_internal_host" {
-  description = "Kubernetes internal host"
   type        = string
 }

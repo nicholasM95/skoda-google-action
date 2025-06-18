@@ -10,15 +10,4 @@ module "application" {
   namespace_name   = var.namespace
   helm_path        = "../../application"
   docker_config    = var.docker_config
-  vault_uri        = var.vault_uri
-}
-
-module "vault_connection" {
-  depends_on                = [module.vault]
-  source                    = "git::https://github.com/nicholasM95/terraform-modules.git//modules/vault-k8s?ref=v1.8.19"
-  vault_path                = var.name
-  kubernetes_ca_cert        = var.kubernetes_ca_cert
-  kubernetes_internal_host  = var.kubernetes_internal_host
-  service_account_name      = var.name
-  service_account_namespace = var.namespace
 }
