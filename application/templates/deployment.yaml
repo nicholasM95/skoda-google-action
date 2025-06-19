@@ -38,6 +38,8 @@ spec:
               value: Europe/Brussels
             - name: SPRING_PROFILES_ACTIVE
               value: prod
+            - name: SPRING_CONFIG_IMPORT
+              value: file:/vault/secrets/oauth2.properties
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
