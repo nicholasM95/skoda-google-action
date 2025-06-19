@@ -2,17 +2,17 @@ terraform {
   required_providers {
     helm = {
       source  = "hashicorp/helm"
-      version = "2.17.0"
+      version = "3.0.1"
     }
 
     vault = {
       source  = "hashicorp/vault"
-      version = "4.8.0"
+      version = "5.0.0"
     }
 
     aws = {
       source  = "hashicorp/aws"
-      version = "5.97.0"
+      version = "6.0.0"
     }
   }
 
@@ -24,7 +24,7 @@ terraform {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path = "~/.kube/config"
   }
 }

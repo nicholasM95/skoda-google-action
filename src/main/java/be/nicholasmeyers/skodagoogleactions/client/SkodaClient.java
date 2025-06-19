@@ -14,6 +14,6 @@ public class SkodaClient {
 
     @Bean
     public CarService carService() {
-        return new CarService(skodaConfig.getEmail(), skodaConfig.getPassword());
+        return new CarService(skodaConfig.getEmail(), skodaConfig.getPassword(), skodaConfig.getApi());
     }
 }
