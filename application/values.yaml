@@ -25,6 +25,11 @@ podAnnotations:
   vault.hashicorp.com/agent-inject-template-oauth2.properties: |
     {{ with secret "skoda-google-actions/data/secret" -}}
     spring.security.oauth2.resourceserver.jwt.issuer-uri={{ .Data.data.ISSUER_URI }}
+    SKODA_EMAIL={{ .Data.data.SKODA_EMAIL }}
+    SKODA_PASSWORD={{ .Data.data.SKODA_PASSWORD }}
+    SKODA_PIN={{ .Data.data.SKODA_PIN }}
+    SKODA_VIN={{ .Data.data.SKODA_VIN }}
+    SKODA_API={{ .Data.data.SKODA_API }}
     {{- end }}
 
 podSecurityContext: {}
