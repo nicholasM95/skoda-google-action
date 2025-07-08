@@ -1,3 +1,16 @@
+# [1.10.0](https://github.com/nicholasM95/skoda-google-action/compare/v1.9.1...v1.10.0) (2025-07-08)
+
+
+### Features
+
+* add ping controller ([3eee0ec](https://github.com/nicholasM95/skoda-google-action/commit/3eee0ec1bcb06742f68a839bba2aa7eef8d53469))
+
+
+### Bug Fixes
+
+* **deps:** update dependency be.nicholasmeyers:skoda-api-client to v1.3.1 ([9a85585](https://github.com/nicholasM95/skoda-google-action/commit/9a855858a923311175ec90a8fb0e7d399a78606a))
+* **deps:** update dependency org.springframework.boot:spring-boot-starter-parent to v3.5.3 ([d8b7f1f](https://github.com/nicholasM95/skoda-google-action/commit/d8b7f1f37f49e05e987e3cae2ad913c62d54f22f))
+
 ## [1.9.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.9.0...v1.9.1) (2025-06-19)
 
 
