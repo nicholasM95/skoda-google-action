@@ -25,6 +25,8 @@ public class SecurityConfig {
             request.requestMatchers(HttpMethod.GET, "/actuator/health/readiness").permitAll();
             request.requestMatchers(HttpMethod.GET, "/actuator/prometheus").permitAll();
             request.requestMatchers(HttpMethod.GET, "/auth").permitAll();
+            request.requestMatchers(HttpMethod.GET, "/ping").permitAll();
+            request.requestMatchers(HttpMethod.HEAD, "/ping").permitAll();
             request.anyRequest().authenticated();
         });
 

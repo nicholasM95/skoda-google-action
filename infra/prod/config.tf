@@ -2,7 +2,7 @@ terraform {
   required_providers {
     helm = {
       source  = "hashicorp/helm"
-      version = "3.0.1"
+      version = "3.0.2"
     }
 
     vault = {
@@ -12,7 +12,7 @@ terraform {
 
     aws = {
       source  = "hashicorp/aws"
-      version = "6.0.0"
+      version = "6.2.0"
     }
   }
 
