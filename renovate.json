@@ -8,5 +8,17 @@
   ],
   "baseBranches": [
     "develop"
+  ],
+  "packageRules": [
+    {
+      "matchFileNames": [".github/workflows/**"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "matchFileNames": ["terraform/**"],
+      "automerge": true,
+      "automergeType": "pr"
+    }
   ]
 }
