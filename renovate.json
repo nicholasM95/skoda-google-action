@@ -6,17 +6,21 @@
   "assignees": [
     "nicholasM95"
   ],
-  "baseBranches": [
+  "baseBranchPatterns": [
     "develop"
   ],
   "packageRules": [
     {
-      "matchFileNames": [".github/workflows/**"],
+      "matchFileNames": [
+        ".github/workflows/**"
+      ],
       "automerge": true,
       "automergeType": "pr"
     },
     {
-      "matchFileNames": ["terraform/**"],
+      "matchFileNames": [
+        "terraform/**"
+      ],
       "automerge": true,
       "automergeType": "pr"
     }
