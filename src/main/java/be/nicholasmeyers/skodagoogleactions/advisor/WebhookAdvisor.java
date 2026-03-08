@@ -35,20 +35,6 @@ public class WebhookAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(problemDetail, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({FlashException.class})
-    protected ResponseEntity<ProblemDetailResponseResource> handleException(FlashException exception, HttpServletRequest request) {
-        ProblemDetailResponseResource problemDetail = problemDetailResponseResource("Skoda Service unavailable", 503, exception.getMessage(), request.getRequestURI());
-        log.error(problemDetail.toString());
-        return new ResponseEntity<>(problemDetail, HttpStatus.SERVICE_UNAVAILABLE);
-    }
-
-    @ExceptionHandler({HonkException.class})
-    protected ResponseEntity<ProblemDetailResponseResource> handleException(HonkException exception, HttpServletRequest request) {
-        ProblemDetailResponseResource problemDetail = problemDetailResponseResource("Skoda Service unavailable", 503, exception.getMessage(), request.getRequestURI());
-        log.error(problemDetail.toString());
-        return new ResponseEntity<>(problemDetail, HttpStatus.SERVICE_UNAVAILABLE);
-    }
-
     @ExceptionHandler({UnsupportedOperationException.class})
     protected ResponseEntity<ProblemDetailResponseResource> handleException(UnsupportedOperationException exception, HttpServletRequest request) {
         ProblemDetailResponseResource problemDetail = problemDetailResponseResource("UnsupportedOperationException", 400, exception.getMessage(), request.getRequestURI());

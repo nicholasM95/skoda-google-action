@@ -1,7 +1,7 @@
 package be.nicholasmeyers.skodagoogleactions.service;
 
-import be.nicholasmeyers.skoda.api.client.CarService;
-import be.nicholasmeyers.skoda.api.client.CarServiceException;
+import be.nicholasmeyers.skoda.api.client.VehicleService;
+import be.nicholasmeyers.skoda.api.client.VehicleServiceException;
 import be.nicholasmeyers.skodagoogleactions.config.SkodaConfig;
 import be.nicholasmeyers.skodagoogleactions.exception.KilometerException;
 import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
@@ -20,12 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.AIRCO;
-import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_HONK_HORN;
-import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_LIGHT_FLASH;
 import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.KILOMETER_SENSOR;
 
 @Slf4j
@@ -33,7 +32,7 @@ import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.KILOMETER
 @Service("action.devices.QUERY")
 public class QueryService implements WebhookService {
 
-    private final CarService carService;
+    private final VehicleService vehicleService;
     private final SkodaConfig skodaConfig;
 
     @Override
@@ -53,11 +52,7 @@ public class QueryService implements WebhookService {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         Map<UUID, StateQueryResource> devices = new HashMap<>();
         devicesId.forEach(id -> {
-            if (BUTTON_LIGHT_FLASH.equals(id.toString())) {
-                devices.put(id, new StateQueryResource("SUCCESS", true, false, null));
-            } else if (BUTTON_HONK_HORN.equals(id.toString())) {
-                devices.put(id, new StateQueryResource("SUCCESS", true, false, null));
-            } else if (AIRCO.equals(id.toString())) {
+            if (AIRCO.equals(id.toString())) {
                 log.info("get air cooler info");
                 CompletableFuture<Void> future = isAirCoolerOn().thenAcceptAsync(isOn -> {
                     log.info("get air cooler info done");
@@ -82,8 +77,11 @@ public class QueryService implements WebhookService {
     private CompletableFuture<Integer> getKilometers() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return carService.getStatus(skodaConfig.getVin()).getKilometer();
-            } catch (CarServiceException e) {
+                Integer totalRange = vehicleService.getVehicleRange(skodaConfig.getVin()).getTotalRangeInKm();
+                Integer remainingRange = vehicleService.getVehicleRange(skodaConfig.getVin()).getRemainingRangeInKm();
+                log.info("Total range: {}, Remaining range: {}", totalRange, remainingRange);
+                return remainingRange;
+            } catch (VehicleServiceException e) {
                 log.error("{} --- {}", e.getMessage(), e.getOriginalMessage());
                 throw new KilometerException("Can't get kilometer information");
             }
@@ -93,8 +91,9 @@ public class QueryService implements WebhookService {
     private CompletableFuture<Boolean> isAirCoolerOn() {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                return carService.getCooling(skodaConfig.getVin()).getReport().getRemainingClimateTime() != 0;
-            } catch (CarServiceException e) {
+                String state = vehicleService.getVehicleAirConditioning(skodaConfig.getVin()).getState();
+                return Objects.equals(state, "VENTILATION");
+            } catch (VehicleServiceException e) {
                 log.error("{} --- {}", e.getMessage(), e.getOriginalMessage());
                 return false;
             }

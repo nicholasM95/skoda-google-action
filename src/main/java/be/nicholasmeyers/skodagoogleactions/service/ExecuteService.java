@@ -1,11 +1,9 @@
 package be.nicholasmeyers.skodagoogleactions.service;
 
-import be.nicholasmeyers.skoda.api.client.CarService;
-import be.nicholasmeyers.skoda.api.client.CarServiceException;
+import be.nicholasmeyers.skoda.api.client.VehicleService;
+import be.nicholasmeyers.skoda.api.client.VehicleServiceException;
 import be.nicholasmeyers.skodagoogleactions.config.SkodaConfig;
 import be.nicholasmeyers.skodagoogleactions.exception.CommandRequestException;
-import be.nicholasmeyers.skodagoogleactions.exception.FlashException;
-import be.nicholasmeyers.skodagoogleactions.exception.HonkException;
 import be.nicholasmeyers.skodagoogleactions.exception.WebHookInputException;
 import be.nicholasmeyers.skodagoogleactions.resource.request.CommandRequestResource;
 import be.nicholasmeyers.skodagoogleactions.resource.request.InputRequestResource;
@@ -22,16 +20,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static be.nicholasmeyers.skoda.api.client.VehicleHeaterSource.ELECTRIC;
+import static be.nicholasmeyers.skoda.api.client.VehicleTemperatureUnit.CELSIUS;
 import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.AIRCO;
-import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_HONK_HORN;
-import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_LIGHT_FLASH;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service("action.devices.EXECUTE")
 public class ExecuteService implements WebhookService {
 
-    private final CarService carService;
+    private final VehicleService vehicleService;
     private final SkodaConfig skodaConfig;
 
     @Override
@@ -75,27 +73,24 @@ public class ExecuteService implements WebhookService {
 
     private String handleCommand(UUID device, boolean on) {
         if (on) {
-            if (UUID.fromString(BUTTON_LIGHT_FLASH).equals(device)) {
-                // Flash
-                String flash = flash();
-                if ("REQUEST_IN_PROGRESS".equals(flash)) {
-                    return "SUCCESS";
-                }
-            } else if (UUID.fromString(BUTTON_HONK_HORN).equals(device)) {
-                // Honk
-                String honk = honk();
-                if ("REQUEST_IN_PROGRESS".equals(honk)) {
-                    return "SUCCESS";
-                }
-            } else if (UUID.fromString(AIRCO).equals(device)) {
+            if (UUID.fromString(AIRCO).equals(device)) {
                 // Start Ventilator
-                String id = carService.startVentilator(skodaConfig.getVin(), skodaConfig.getPin(), 30);
-                return handleVentilatorRequest(id);
+                try {
+                    vehicleService.startVehicleAirConditioning(skodaConfig.getVin(),  ELECTRIC, 20, CELSIUS);
+                    return handleVentilatorRequest("id");
+                } catch (VehicleServiceException e) {
+                    return handleVentilatorRequest(null);
+                }
+
             }
         } else if (UUID.fromString(AIRCO).equals(device)) {
             // Stop Ventilator
-            String id = carService.stopVentilator(skodaConfig.getVin(),  skodaConfig.getPin());
-            return handleVentilatorRequest(id);
+            try {
+                vehicleService.stopVehicleAirConditioning(skodaConfig.getVin());
+                return handleVentilatorRequest("id");
+            } catch (VehicleServiceException e) {
+                return handleVentilatorRequest(null);
+            }
         }
         return "FAILURE";
     }
@@ -105,24 +100,6 @@ public class ExecuteService implements WebhookService {
             return "SUCCESS".equals(status) && on;
         }
         return false;
-    }
-
-    private String flash() {
-        try {
-            return carService.flash(skodaConfig.getVin(), 30);
-        } catch (CarServiceException e) {
-            log.error("{} --- {}", e.getMessage(), e.getOriginalMessage());
-            throw new FlashException("Can't flash lights");
-        }
-    }
-
-    private String honk() {
-        try {
-            return carService.honk(skodaConfig.getVin(), 30);
-        } catch (CarServiceException e) {
-            log.error("{} --- {}", e.getMessage(), e.getOriginalMessage());
-            throw new HonkException("Can't honk");
-        }
     }
 
     private String handleVentilatorRequest(String id) {
