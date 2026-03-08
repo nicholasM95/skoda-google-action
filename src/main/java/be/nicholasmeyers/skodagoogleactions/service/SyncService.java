@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.AIRCO;
-import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_HONK_HORN;
-import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.BUTTON_LIGHT_FLASH;
 import static be.nicholasmeyers.skodagoogleactions.device.DeviceConfig.KILOMETER_SENSOR;
 
 @Service("action.devices.SYNC")
@@ -29,8 +27,6 @@ public class SyncService implements WebhookService {
 
     private List<DeviceSyncResource> createDevices() {
         List<DeviceSyncResource> deviceSyncResources = new ArrayList<>();
-        deviceSyncResources.add(createButtonDevice(BUTTON_LIGHT_FLASH, "knipperlicht"));
-        deviceSyncResources.add(createButtonDevice(BUTTON_HONK_HORN, "toeter"));
         deviceSyncResources.add(createAirCooler());
         deviceSyncResources.add(createKilometerSensor());
 

@@ -1,10 +1,9 @@
 package be.nicholasmeyers.skodagoogleactions.controller;
 
-import be.nicholasmeyers.skoda.api.client.CarCoolingInfo;
-import be.nicholasmeyers.skoda.api.client.CarReport;
-import be.nicholasmeyers.skoda.api.client.CarService;
-import be.nicholasmeyers.skoda.api.client.CarServiceException;
-import be.nicholasmeyers.skoda.api.client.CarStatus;
+import be.nicholasmeyers.skoda.api.client.VehicleAirConditioningStatus;
+import be.nicholasmeyers.skoda.api.client.VehicleRange;
+import be.nicholasmeyers.skoda.api.client.VehicleService;
+import be.nicholasmeyers.skoda.api.client.VehicleServiceException;
 import be.nicholasmeyers.skodagoogleactions.core.security.SecurityConfig;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +17,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static be.nicholasmeyers.skoda.api.client.VehicleHeaterSource.ELECTRIC;
+import static be.nicholasmeyers.skoda.api.client.VehicleTemperatureUnit.CELSIUS;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.io.IOUtils.toByteArray;
 import static org.springframework.test.json.JsonCompareMode.STRICT;
@@ -38,7 +39,7 @@ public class WebHookControllerIntegrationTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private CarService carService;
+    private VehicleService vehicleService;
 
     @Nested
     class Sync {
@@ -100,17 +101,14 @@ public class WebHookControllerIntegrationTest {
     class Query {
         @Test
         public void query() throws Exception {
-            CarStatus carStatus = Mockito.mock(CarStatus.class);
-            Mockito.when(carStatus.getKilometer()).thenReturn(450);
-            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
+            VehicleRange vehicleRange = Mockito.mock(VehicleRange.class);
+            Mockito.when(vehicleRange.getTotalRangeInKm()).thenReturn(200);
+            Mockito.when(vehicleRange.getRemainingRangeInKm()).thenReturn(450);
+            Mockito.when(vehicleService.getVehicleRange("QMGAG8BEQSY003476")).thenReturn(vehicleRange);
 
-            CarReport carReport = Mockito.mock(CarReport.class);
-            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(0);
-
-            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
-            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
-
-            Mockito.when(carService.getCooling("QMGAG8BEQSY003476")).thenReturn(carCoolingInfo);
+            VehicleAirConditioningStatus vehicleAirConditioningStatus = Mockito.mock(VehicleAirConditioningStatus.class);
+            Mockito.when(vehicleAirConditioningStatus.getState()).thenReturn("OFF");
+            Mockito.when(vehicleService.getVehicleAirConditioning("QMGAG8BEQSY003476")).thenReturn(vehicleAirConditioningStatus);
 
             String requestBody = """
                     {
@@ -120,11 +118,7 @@ public class WebHookControllerIntegrationTest {
                                 "intent": "action.devices.QUERY",
                                 "payload": {
                                     "devices": [
-                                        {
-                                            "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                        },{
-                                            "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                        },{
+                                       {
                                             "id": "b1c18c45-8e42-493c-a3c0-928bd631caf7"
                                         },{
                                             "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
@@ -150,17 +144,14 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void queryAirCoolerOn() throws Exception {
-            CarStatus carStatus = Mockito.mock(CarStatus.class);
-            Mockito.when(carStatus.getKilometer()).thenReturn(450);
-            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
+            VehicleRange vehicleRange = Mockito.mock(VehicleRange.class);
+            Mockito.when(vehicleRange.getTotalRangeInKm()).thenReturn(200);
+            Mockito.when(vehicleRange.getRemainingRangeInKm()).thenReturn(450);
+            Mockito.when(vehicleService.getVehicleRange("QMGAG8BEQSY003476")).thenReturn(vehicleRange);
 
-            CarReport carReport = Mockito.mock(CarReport.class);
-            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(20);
-
-            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
-            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
-
-            Mockito.when(carService.getCooling("QMGAG8BEQSY003476")).thenReturn(carCoolingInfo);
+            VehicleAirConditioningStatus vehicleAirConditioningStatus = Mockito.mock(VehicleAirConditioningStatus.class);
+            Mockito.when(vehicleAirConditioningStatus.getState()).thenReturn("VENTILATION");
+            Mockito.when(vehicleService.getVehicleAirConditioning("QMGAG8BEQSY003476")).thenReturn(vehicleAirConditioningStatus);
 
             String requestBody = """
                     {
@@ -171,10 +162,6 @@ public class WebHookControllerIntegrationTest {
                                 "payload": {
                                     "devices": [
                                         {
-                                            "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                        },{
-                                            "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                        },{
                                             "id": "b1c18c45-8e42-493c-a3c0-928bd631caf7"
                                         },{
                                             "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
@@ -199,69 +186,15 @@ public class WebHookControllerIntegrationTest {
         }
 
         @Test
-        public void queryAirCoolerOff() throws Exception {
-            CarStatus carStatus = Mockito.mock(CarStatus.class);
-            Mockito.when(carStatus.getKilometer()).thenReturn(450);
-            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
-
-            CarReport carReport = Mockito.mock(CarReport.class);
-            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(0);
-
-            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
-            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
-
-            Mockito.when(carService.getCooling("QMGAG8BEQSY003476")).thenReturn(carCoolingInfo);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.QUERY",
-                                "payload": {
-                                    "devices": [
-                                        {
-                                            "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                        },{
-                                            "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                        },{
-                                            "id": "b1c18c45-8e42-493c-a3c0-928bd631caf7"
-                                        },{
-                                            "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = new String(toByteArray(requireNonNull(
-                    this.getClass().getResourceAsStream("query_1_response.json"))
-            ));
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
         public void queryAirCoolerException() throws Exception {
-            CarStatus carStatus = Mockito.mock(CarStatus.class);
-            Mockito.when(carStatus.getKilometer()).thenReturn(450);
-            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenReturn(carStatus);
+            VehicleRange vehicleRange = Mockito.mock(VehicleRange.class);
+            Mockito.when(vehicleRange.getTotalRangeInKm()).thenReturn(200);
+            Mockito.when(vehicleRange.getRemainingRangeInKm()).thenReturn(450);
+            Mockito.when(vehicleService.getVehicleRange("QMGAG8BEQSY003476")).thenReturn(vehicleRange);
 
-            CarReport carReport = Mockito.mock(CarReport.class);
-            Mockito.when(carReport.getRemainingClimateTime()).thenReturn(0);
 
-            CarCoolingInfo carCoolingInfo = Mockito.mock(CarCoolingInfo.class);
-            Mockito.when(carCoolingInfo.getReport()).thenReturn(carReport);
-
-            Mockito.when(carService.getCooling("QMGAG8BEQSY003476"))
-                    .thenThrow(new CarServiceException("", ""));
+            Mockito.when(vehicleService.getVehicleAirConditioning("QMGAG8BEQSY003476"))
+                    .thenThrow(new VehicleServiceException("", ""));
 
             String requestBody = """
                     {
@@ -272,10 +205,6 @@ public class WebHookControllerIntegrationTest {
                                 "payload": {
                                     "devices": [
                                         {
-                                            "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                        },{
-                                            "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                        },{
                                             "id": "b1c18c45-8e42-493c-a3c0-928bd631caf7"
                                         },{
                                             "id": "2ec009da-cd6f-4adc-9021-9e7861358408"
@@ -331,7 +260,7 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void queryInvalidKilometer() throws Exception {
-            Mockito.when(carService.getStatus("QMGAG8BEQSY003476")).thenThrow(new CarServiceException("", ""));
+            Mockito.when(vehicleService.getVehicleRange("QMGAG8BEQSY003476")).thenThrow(new VehicleServiceException("", ""));
 
             String requestBody = """
                     {
@@ -371,299 +300,11 @@ public class WebHookControllerIntegrationTest {
 
     @Nested
     class Execute {
-        @Test
-        public void executeSwitch1() throws Exception {
-            Mockito.when(carService.flash("QMGAG8BEQSY003476", 30)).thenReturn("REQUEST_IN_PROGRESS");
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = new String(toByteArray(requireNonNull(
-                    this.getClass().getResourceAsStream("execute_switch_1_success_response.json"))
-            ));
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void executeSwitch1Failure() throws Exception {
-            Mockito.when(carService.flash("QMGAG8BEQSY003476", 30)).thenReturn(null);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = new String(toByteArray(requireNonNull(
-                    this.getClass().getResourceAsStream("execute_switch_1_failure_response.json"))
-            ));
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void executeSwitch1FlashFailed() throws Exception {
-            Mockito.when(carService.flash("QMGAG8BEQSY003476", 30))
-                    .thenThrow(new CarServiceException("", ""));
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "6abb7eaa-08a8-44c0-83a7-9c3c658bd63e"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Can't flash lights",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void executeSwitch2() throws Exception {
-            Mockito.when(carService.honk("QMGAG8BEQSY003476", 30)).thenReturn("REQUEST_IN_PROGRESS");
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = new String(toByteArray(requireNonNull(
-                    this.getClass().getResourceAsStream("execute_switch_2_success_response.json"))
-            ));
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void executeSwitch2Failure() throws Exception {
-            Mockito.when(carService.honk("QMGAG8BEQSY003476", 30)).thenReturn(null);
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = new String(toByteArray(requireNonNull(
-                    this.getClass().getResourceAsStream("execute_switch_2_failure_response.json"))
-            ));
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
-        @Test
-        public void executeSwitch2HonkFailed() throws Exception {
-            Mockito.when(carService.honk("QMGAG8BEQSY003476", 30))
-                    .thenThrow(new CarServiceException("", ""));
-
-            String requestBody = """
-                    {
-                        "requestId": "123",
-                        "inputs": [
-                            {
-                                "intent": "action.devices.EXECUTE",
-                                "payload": {
-                                    "commands": [
-                                        {
-                                            "devices": [
-                                                {
-                                                    "id": "883f8b70-1649-41f2-8a53-b41df7214f4a"
-                                                }
-                                            ],
-                                            "execution": [
-                                                {
-                                                    "command": "action.devices.commands.OnOff",
-                                                    "params": {
-                                                        "on": true
-                                                    }
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        ]
-                    }
-                    """;
-
-            String responseBody = """
-                    {
-                        "title":"Skoda Service unavailable",
-                        "status":503,
-                        "detail":"Can't honk",
-                        "instance":"/webhook"
-                    }
-                    """;
-
-            mockMvc.perform(post("/webhook")
-                            .accept(MediaType.APPLICATION_JSON)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(requestBody))
-                    .andExpect(status().isServiceUnavailable())
-                    .andExpect(content().json(responseBody, STRICT));
-        }
-
 
         @Test
         public void executeVentilatorOn() throws Exception {
-           Mockito.when(carService.startVentilator("QMGAG8BEQSY003476", "1111", 30))
-                    .thenReturn("5555");
+           /*Mockito.when(carService.startVentilator("QMGAG8BEQSY003476", "1111", 30))
+                    .thenReturn("5555");*/
 
             String requestBody = """
                     {
@@ -709,7 +350,9 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOnFailure() throws Exception {
-            Mockito.when(carService.startVentilator("QMGAG8BEQSY003476", "1111", 30)).thenReturn(null);
+            Mockito.doThrow(new VehicleServiceException("", ""))
+                    .when(vehicleService)
+                    .startVehicleAirConditioning("QMGAG8BEQSY003476", ELECTRIC, 20, CELSIUS);
 
             String requestBody = """
                     {
@@ -755,9 +398,6 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOff() throws Exception {
-            Mockito.when(carService.stopVentilator("QMGAG8BEQSY003476", "1111")).thenReturn("5555");
-            Mockito.when(carService.getRequest("QMGAG8BEQSY003476", "5555")).thenReturn("request_successful");
-
             String requestBody = """
                     {
                         "requestId": "123",
@@ -802,7 +442,9 @@ public class WebHookControllerIntegrationTest {
 
         @Test
         public void executeVentilatorOffFailure() throws Exception {
-            Mockito.when(carService.stopVentilator("QMGAG8BEQSY003476", "1111")).thenReturn(null);
+            Mockito.doThrow(new VehicleServiceException("", ""))
+                    .when(vehicleService)
+                    .stopVehicleAirConditioning("QMGAG8BEQSY003476");
 
             String requestBody = """
                     {
