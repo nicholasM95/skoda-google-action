@@ -1,3 +1,5 @@
+## [1.10.2](https://github.com/nicholasM95/skoda-google-action/compare/v1.10.1...v1.10.2) (2026-03-08)
+
 ## [1.10.1](https://github.com/nicholasM95/skoda-google-action/compare/v1.10.0...v1.10.1) (2026-03-03)
 
 
