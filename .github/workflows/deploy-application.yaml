@@ -30,7 +30,7 @@ jobs:
 
       - name: Import secret
         id: import-secret
-        uses: hashicorp/vault-action@v3
+        uses: hashicorp/vault-action@v4
         with:
           url: ${{ env.VAULT_ADDR }}
           role: github-actions-secret
